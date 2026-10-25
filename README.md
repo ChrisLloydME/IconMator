@@ -33,3 +33,5 @@ IconMator's original code and documentation are licensed under [MIT](LICENSE),
 copyright 2026 Chris Lloyd. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
 for the dependency review, system/toolchain components and excluded materials.
 Converted artwork retains its original rights; conversion does not make it MIT.
+
+The application icon is built directly from `IconMator/AppIcon.icon` with Apple's asset compiler, including a full-size standalone ICNS fallback. No Downloads path is required at build time.

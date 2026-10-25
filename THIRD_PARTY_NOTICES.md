@@ -41,6 +41,12 @@ components, review their exact versions and notices before distribution.
 
 ## Artwork and external documentation
 
+`IconMator/AppIcon.icon` is the application icon supplied by the maintainer for
+use as IconMator branding. Its artwork is excluded from the software MIT grant
+unless the rights holder separately licenses it. The project compiles this
+original Icon Composer document directly; it is distinct from the removed
+third-party research examples.
+
 Metadatics example PNG/ICNS files are not licensed under this project's MIT
 license. They have been removed from the repository and its Git history at the
 maintainer's request. Private reference inputs and regenerated conversion outputs
@@ -57,8 +63,9 @@ MIT-licensed; no permission to relicense external materials is asserted.
 ## Release packaging
 
 The macOS app includes LICENSE and this notice in Contents/Resources. When
-packaging the standalone CLI or source, include these files as well. No third-party
-artwork or Apple developer executables belong in the release archive.
+packaging the standalone CLI or source, include these files as well. No unrelated example
+artwork or Apple developer executables belong in the release archive. The
+maintainer-supplied application icon is included as application branding.
 
 Review scope: tracked files, package/project configuration, recorded implementation
 provenance, and the current local Release bundle. This is a dependency/provenance
