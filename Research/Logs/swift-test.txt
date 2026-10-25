@@ -1,0 +1,28 @@
+[0/1] Planning build
+Building for debugging...
+[0/8] /Users/lloyd/Developer/IconMator/.build/native/arm64-apple-macosx/debug/IconMatorPackageTests.derived/runner.swift
+[1/8] Write sources
+[3/8] Write swift-version--58304C5D6DBC2206.txt
+[5/8] Compiling IconConversionCoreTests ImageAnalysisTests.swift
+[6/8] Emitting module IconConversionCoreTests
+[7/10] Compiling IconMatorPackageTests runner.swift
+[8/10] Emitting module IconMatorPackageTests
+[8/10] Write Objects.LinkFileList
+[9/10] Linking IconMatorPackageTests
+Build complete! (3.77s)
+warning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system.
+Test Suite 'All tests' started at 2026-10-25 18:13:57.100.
+Test Suite 'All tests' passed at 2026-10-25 18:13:57.102.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite ImageAnalysisTests started.
+􀟈  Test fullCanvasAlphaAndGeometry() started.
+􀟈  Test detectsAlphaDifferences() started.
+􀟈  Test doesNotHideCanvasChangesByCropping() started.
+􁁛  Test doesNotHideCanvasChangesByCropping() passed after 0.008 seconds.
+􁁛  Test detectsAlphaDifferences() passed after 0.009 seconds.
+􁁛  Test fullCanvasAlphaAndGeometry() passed after 0.009 seconds.
+􁁛  Suite ImageAnalysisTests passed after 0.010 seconds.
+􁁛  Test run with 3 tests in 1 suite passed after 0.010 seconds.

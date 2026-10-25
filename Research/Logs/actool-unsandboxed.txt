@@ -1,0 +1,5 @@
+/* com.apple.actool.compilation-results */
+/Users/lloyd/Developer/IconMator/.research/Actool/Assets.car
+/Users/lloyd/Developer/IconMator/.research/Actool/Tunes.icns
+/Users/lloyd/Developer/IconMator/.research/Actool/partial.plist
+

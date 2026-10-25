@@ -1,0 +1,15 @@
+warning: 'iconmator': Source files for target IconConversionCoreTests should be located under 'Tests/IconConversionCoreTests', 'Tests', or a custom sources path can be set with the 'path' property in Package.swift
+Building for debugging...
+[0/7] Write sources
+[2/7] Write iconmator-entitlement.plist
+[3/7] Write swift-version--58304C5D6DBC2206.txt
+[5/10] Compiling IconConversionCore ImageAnalysis.swift
+[6/10] Compiling IconConversionCore ConversionError.swift
+[7/10] Emitting module IconConversionCore
+[8/12] Emitting module iconmator
+[9/12] Compiling iconmator main.swift
+[9/12] Write Objects.LinkFileList
+[10/12] Linking iconmator
+[11/12] Applying iconmator
+Build complete! (4.80s)
+warning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system.

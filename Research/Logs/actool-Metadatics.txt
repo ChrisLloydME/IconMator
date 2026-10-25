@@ -1,0 +1,5 @@
+/* com.apple.actool.compilation-results */
+/Users/lloyd/Developer/IconMator/.research/Metadatics/Assets.car
+/Users/lloyd/Developer/IconMator/.research/Metadatics/Metadatics.icns
+/Users/lloyd/Developer/IconMator/.research/Metadatics/partial.plist
+

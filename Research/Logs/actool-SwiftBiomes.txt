@@ -1,0 +1,5 @@
+/* com.apple.actool.compilation-results */
+/Users/lloyd/Developer/IconMator/.research/SwiftBiomes/Assets.car
+/Users/lloyd/Developer/IconMator/.research/SwiftBiomes/SwiftBiomes.icns
+/Users/lloyd/Developer/IconMator/.research/SwiftBiomes/partial.plist
+
