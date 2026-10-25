@@ -1,0 +1,52 @@
+{
+  "alphaMeanAbsoluteError" : 0,
+  "candidate" : {
+    "height" : 32,
+    "opaquePixels" : 544,
+    "solidBounds" : {
+      "height" : 26,
+      "width" : 26,
+      "x" : 3,
+      "y" : 3
+    },
+    "sourceBitsPerComponent" : 8,
+    "sourceColorSpace" : "kCGColorSpaceSRGB",
+    "sourceHasAlpha" : true,
+    "transparentPixels" : 380,
+    "visibleBounds" : {
+      "height" : 26,
+      "width" : 26,
+      "x" : 3,
+      "y" : 3
+    },
+    "width" : 32
+  },
+  "classification" : "Exact after 8-bit sRGB normalization",
+  "differentPixels" : 0,
+  "maximumAlphaDifference" : 0,
+  "maximumChannelDifference" : 0,
+  "normalization" : "Full-canvas 8-bit sRGB premultiplied RGBA via CoreGraphics; source files preserved. Color\/profile\/quantization differences may be removed or introduced. Bounds use alpha >= 1 and >= 128; y follows bitmap row order.",
+  "normalizedExactMatch" : true,
+  "reference" : {
+    "height" : 32,
+    "opaquePixels" : 544,
+    "solidBounds" : {
+      "height" : 26,
+      "width" : 26,
+      "x" : 3,
+      "y" : 3
+    },
+    "sourceBitsPerComponent" : 8,
+    "sourceColorSpace" : "kCGColorSpaceSRGB",
+    "sourceHasAlpha" : true,
+    "transparentPixels" : 380,
+    "visibleBounds" : {
+      "height" : 26,
+      "width" : 26,
+      "x" : 3,
+      "y" : 3
+    },
+    "width" : 32
+  },
+  "rgbaMeanAbsoluteError" : 0
+}

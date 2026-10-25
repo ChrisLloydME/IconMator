@@ -1,0 +1,53 @@
+[0/1] Planning build
+Building for debugging...
+[0/5] Write sources
+[1/5] Write swift-version--58304C5D6DBC2206.txt
+[3/5] Emitting module IconConversionCoreTests
+[4/5] Compiling IconConversionCoreTests AppleIntegrationTests.swift
+[4/6] Write Objects.LinkFileList
+[5/6] Linking IconMatorPackageTests
+Build complete! (1.41s)
+warning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system.
+Test Suite 'All tests' started at 2026-10-25 18:32:20.994.
+Test Suite 'All tests' passed at 2026-10-25 18:32:20.995.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite ImageAnalysisTests started.
+􀟈  Suite EngineTests started.
+􀟈  Suite AppleIntegrationTests started.
+􀟈  Test doesNotHideCanvasChangesByCropping() started.
+􀟈  Test fullCanvasAlphaAndGeometry() started.
+􀟈  Test detectsAlphaDifferences() started.
+􀟈  Test unsupportedOrMissingToolchainFailsClearly() started.
+􀟈  Test installedToolsAndReferenceRoundTrip() started.
+􀟈  Test processCanBeCancelled() started.
+􀟈  Test processArgumentsAreNotInterpretedByShell() started.
+􀟈  Test temporaryWorkspacesAreIsolatedAndCleaned() started.
+􀟈  Test realRenderingBatchCancellationAndInputPreservation() started.
+􀟈  Test processDiagnosticsAndFailureArePropagated() started.
+􀟈  Test atomicPublisherRefusesCollisionAndSupportsApprovedReplacement() started.
+􀟈  Test invalidInputAndSymlinksAreRejected() started.
+􀟈  Test publisherPreparesAllOutputsBeforeChangingAny() started.
+􀟈  Test processTimeoutTerminatesTool() started.
+􀟈  Test smallMasterIsNeverUpscaled() started.
+􁁛  Test unsupportedOrMissingToolchainFailsClearly() passed after 0.003 seconds.
+􁁛  Test temporaryWorkspacesAreIsolatedAndCleaned() passed after 0.003 seconds.
+􁁛  Test atomicPublisherRefusesCollisionAndSupportsApprovedReplacement() passed after 0.004 seconds.
+􁁛  Test invalidInputAndSymlinksAreRejected() passed after 0.004 seconds.
+􁁛  Test processDiagnosticsAndFailureArePropagated() passed after 0.005 seconds.
+􁁛  Test processArgumentsAreNotInterpretedByShell() passed after 0.006 seconds.
+􁁛  Test publisherPreparesAllOutputsBeforeChangingAny() passed after 0.008 seconds.
+􁁛  Test smallMasterIsNeverUpscaled() passed after 0.010 seconds.
+􁁛  Test doesNotHideCanvasChangesByCropping() passed after 0.011 seconds.
+􁁛  Test detectsAlphaDifferences() passed after 0.012 seconds.
+􁁛  Test fullCanvasAlphaAndGeometry() passed after 0.013 seconds.
+􁁛  Suite ImageAnalysisTests passed after 0.013 seconds.
+􁁛  Test processTimeoutTerminatesTool() passed after 0.057 seconds.
+􁁛  Test processCanBeCancelled() passed after 0.100 seconds.
+􁁛  Suite EngineTests passed after 0.101 seconds.
+􁁛  Test installedToolsAndReferenceRoundTrip() passed after 6.266 seconds.
+􁁛  Test realRenderingBatchCancellationAndInputPreservation() passed after 11.886 seconds.
+􁁛  Suite AppleIntegrationTests passed after 11.886 seconds.
+􁁛  Test run with 15 tests in 3 suites passed after 11.886 seconds.
