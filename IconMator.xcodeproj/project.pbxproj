@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		C0DE00000000000000000001 /* IconConversionCore in Frameworks */ = {isa = PBXBuildFile; productRef = C0DE00000000000000000002 /* IconConversionCore */; };
+		C0DE00000000000000000004 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = C0DE00000000000000000006 /* LICENSE */; };
+		C0DE00000000000000000005 /* THIRD_PARTY_NOTICES.md in Resources */ = {isa = PBXBuildFile; fileRef = C0DE00000000000000000007 /* THIRD_PARTY_NOTICES.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,6 +30,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C0DE00000000000000000006 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		C0DE00000000000000000007 /* THIRD_PARTY_NOTICES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = THIRD_PARTY_NOTICES.md; sourceTree = "<group>"; };
 		6EA1E605308E0AC40034FE14 /* IconMator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IconMator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EA1E612308E0AC60034FE14 /* IconMatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IconMatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EA1E61C308E0AC60034FE14 /* IconMatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IconMatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -74,6 +78,8 @@
 		6EA1E5FC308E0AC40034FE14 = {
 			isa = PBXGroup;
 			children = (
+				C0DE00000000000000000006 /* LICENSE */,
+				C0DE00000000000000000007 /* THIRD_PARTY_NOTICES.md */,
 				6EA1E607308E0AC40034FE14 /* IconMator */,
 				6EA1E615308E0AC60034FE14 /* IconMatorTests */,
 				6EA1E61F308E0AC60034FE14 /* IconMatorUITests */,
@@ -208,6 +214,8 @@
 		6EA1E603308E0AC40034FE14 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
+				C0DE00000000000000000004 /* LICENSE in Resources */,
+				C0DE00000000000000000005 /* THIRD_PARTY_NOTICES.md in Resources */,
 			);
 		};
 		6EA1E610308E0AC60034FE14 /* Resources */ = {
@@ -388,7 +396,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Chris Lloyd";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -421,7 +429,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Chris Lloyd";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

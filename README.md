@@ -21,7 +21,15 @@ The SwiftUI app uses a single shared drop/import and preview area. New imports a
 
 **Current app configuration:** With explicit user authorization, Debug and Release are local non-sandboxed developer builds (`ENABLE_APP_SANDBOX=NO`). Hardened Runtime remains enabled. No system security/privacy settings are changed, and Apple developer executables are resolved from the installed Xcode rather than embedded. If App Sandbox is re-enabled, the UI clearly disables this unvalidated execution configuration.
 
-Reference outputs are in `Examples/Metadatics`: `Reference.icns` is the supplied PNG packaged without changing the master; `Converted.icns` and `Converted.png` use the new source rendering. Their difference is quantified in [VALIDATION_REPORT.md](VALIDATION_REPORT.md). See [ARCHITECTURE.md](ARCHITECTURE.md) for components, file safety and distribution constraints.
+Example artwork is not distributed in the repository. Reference measurements remain in [VALIDATION_REPORT.md](VALIDATION_REPORT.md); reproduce outputs locally using reference inputs you are authorized to use. See [ARCHITECTURE.md](ARCHITECTURE.md) for components, file safety and distribution constraints.
 
 
 Both configurations were also built and ad-hoc signed locally using `xcodebuild -project IconMator.xcodeproj -scheme IconMator -configuration Debug -derivedDataPath .research/AppDerived CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual build` (substitute Release as needed). The resulting apps are under `.research/AppDerived/Build/Products/Debug` and `Release`. Signing permissions and bundle identifiers were inspected without launching them. Ad-hoc signing supports local use; it is not notarized distribution.
+
+
+## License
+
+IconMator's original code and documentation are licensed under [MIT](LICENSE),
+copyright 2026 Chris Lloyd. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
+for the dependency review, system/toolchain components and excluded materials.
+Converted artwork retains its original rights; conversion does not make it MIT.

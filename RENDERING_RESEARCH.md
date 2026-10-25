@@ -141,3 +141,14 @@ The production backend's diagnostic run (`Research/Logs/convert-Metadatics-diagn
 Thus the backend requests each size from IconServices and downsamples the returned native source when necessary; it does not derive every rendition by repeatedly scaling one 1024 image. No source is upscaled. The 1024 export remains a full-canvas 1:1 render. These dimensions are observations for this host, not a promise of future API behavior.
 
 Final full conversions of Tunes, AudioMator and SwiftBiomes also passed the exact per-rendition decode gate. They remain structural controls without paired Finder references.
+
+
+Example artwork binaries are excluded from the distributed repository and are
+purged from Git history at the maintainer's request. The JSON metrics and
+original research commentary remain; private reference inputs and generated
+images are not covered by the project's MIT license. Historical commands retain their original `Examples/Metadatics` paths as an
+execution record, not distributed files. To reproduce them privately, create that
+ignored directory and supply your own authorized inputs.
+
+The captured Apple actool manual was also removed from the repository and Git
+history. The recorded `man actool` command remains the way to inspect it locally.

@@ -7,3 +7,9 @@ DerivedData/
 Research/Comparisons/**/*.png
 
 .swiftpm/xcode/xcuserdata/
+
+# Private or regenerated example artwork must not be redistributed.
+Examples/
+
+# Do not redistribute copied Apple documentation.
+Research/Logs/actool-man.txt

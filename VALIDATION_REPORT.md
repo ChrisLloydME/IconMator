@@ -82,3 +82,14 @@ A successful build or iconutil exit alone is never treated as evidence of fideli
 The user's feedback confirmed drag/drop worked, while Choose Files could not select `.icon` documents. The old picker depended on an extension-derived content type and disallowed directory selection. The revised picker explicitly supports directory packages and validates the document contents on confirmation; ordinary folders remain available for navigation. Delegate tests cover valid `.icon` directories, malformed packages, unrelated files and folder navigation. Actual panel interaction is still unperformed under the no-GUI instruction.
 
 The sidebar has been removed. A single area handles empty-state import and selected-icon preview; additional files appear in a thumbnail tray. Newly imported files automatically become the preview selection, including when another icon was already selected. The bottom area contains destination/PNG options and Finder, Diagnostics and conversion controls. Tests use a mock preview provider only to check presentation orchestration; real rendering continues to run in the separate Apple integration suite. Both redesigned app configurations compile, pass local signature verification and retain their distinct identifiers.
+
+
+Example artwork binaries are excluded from the distributed repository and are
+purged from Git history at the maintainer's request. The JSON metrics and
+original research commentary remain; private reference inputs and generated
+images are not covered by the project's MIT license. Historical commands retain their original `Examples/Metadatics` paths as an
+execution record, not distributed files. To reproduce them privately, create that
+ignored directory and supply your own authorized inputs.
+
+The captured Apple actool manual was also removed from the repository and Git
+history. The recorded `man actool` command remains the way to inspect it locally.
