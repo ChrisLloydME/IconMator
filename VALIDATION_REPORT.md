@@ -8,11 +8,11 @@ Status: conversion engine and frontend implementation exist and compile. The eng
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Debug application build, local ad-hoc signing | PASS | Research/Logs/app-debug-build.txt |
-| Release application build, local ad-hoc signing | PASS | Research/Logs/app-release-build.txt |
+| Debug application build, local ad-hoc signing | PASS | Research/Logs/ui-redesign-debug-build.txt |
+| Release application build, local ad-hoc signing | PASS | Research/Logs/ui-redesign-release-build.txt |
 | Debug generated CFBundleIdentifier | com.lloydME.IconMator.beta | Inspected built Debug Info.plist with PlistBuddy |
 | Release generated CFBundleIdentifier | com.lloydME.IconMator | Inspected built Release Info.plist with PlistBuddy |
-| Full Swift test suite including real-tool integration | 21 tests PASS, 5 suites | Research/Logs/full-tests.txt |
+| Full Swift test suite including real-tool integration | 25 tests PASS, 6 suites | Research/Logs/ui-redesign-tests.txt |
 | PNG reference → ICNS → independent iconutil decode | Exact normalized 1024 RGBA match; all ten source renditions retained | Research/Comparisons/Final-reference-roundtrip/comparison.json |
 | Metadatics .icon → ICNS + PNG | PASS structural and packaging gates; reference differences below | Research/Logs/convert-Metadatics.txt |
 | Tunes, AudioMator, SwiftBiomes complete conversion | PASS; all ten decoded renditions compared internally | Research/Logs/convert-*.txt |
@@ -24,7 +24,8 @@ Status: conversion engine and frontend implementation exist and compile. The eng
 | Missing/unsupported toolchain, invalid input, symlinks, small master | PASS | EngineTests |
 | Full-canvas dimensions, geometry, alpha metrics and diff generation | PASS | ImageAnalysisTests |
 | Import deduplication, selection removal, invalid-import feedback, sandbox gating, batch naming | PASS | PresentationTests; no GUI launched |
-| UI layout/flow source review | Reviewed | ContentView.swift and ConversionViewModel.swift |
+| Package-aware picker validation, selecting newly imported files, automatic preview | PASS | ImportWorkflowTests; picker delegate and model only, no panel displayed |
+| UI layout/flow source review | Reviewed | ContentView.swift, ConversionViewModel.swift and IconImportPanel.swift |
 | Finder custom-icon visual display, multi-scale visual review | NOT PERFORMED | No GUI verification per instruction |
 | macOS 26 runtime, other Xcode/host builds, Dark/Mono/generation selection | NOT VALIDATED; unavailable | Exact environment gate |
 | Actual local app entitlements and Hardened Runtime | Inspected after ad-hoc signing; no App Sandbox entitlement | Research/Logs/*entitlements.txt, release-signature.txt |
@@ -68,9 +69,16 @@ Metadatics supplies three translucent layers, a P3 gradient, shadows and boundar
 
 ## Acceptance tracking
 
-- Implemented: imports, multi-file list, same-pipeline preview, sequential batch naming, folder export, optional PNG, cancellation, progress, errors, overwrite confirmation, Finder reveal action, independent ten-size ICNS validation, input-byte preservation.
+- Implemented: imports, multi-file thumbnail navigation, automatic same-pipeline preview, sequential batch naming, folder export, optional PNG, cancellation, progress, errors, overwrite confirmation, Finder reveal action, independent ten-size ICNS validation, input-byte preservation.
 - Verified without GUI: engine conversion, real concurrent jobs, 1024 master, alpha preservation through packaging, tests, both app builds, distinct bundle identifiers, presentation-model behavior.
 - Completed configuration: user-authorized non-sandboxed Debug/Release, local ad-hoc signatures, preserved Hardened Runtime.
 - Pending: interactive UI behavior; Finder custom-icon appearance; multi-scale visual review; broader paired references; macOS 26 support; signed distribution.
 
 A successful build or iconutil exit alone is never treated as evidence of fidelity. Product acceptance must remain qualified until the pending checks are resolved.
+
+
+## Import and preview redesign
+
+The user's feedback confirmed drag/drop worked, while Choose Files could not select `.icon` documents. The old picker depended on an extension-derived content type and disallowed directory selection. The revised picker explicitly supports directory packages and validates the document contents on confirmation; ordinary folders remain available for navigation. Delegate tests cover valid `.icon` directories, malformed packages, unrelated files and folder navigation. Actual panel interaction is still unperformed under the no-GUI instruction.
+
+The sidebar has been removed. A single area handles empty-state import and selected-icon preview; additional files appear in a thumbnail tray. Newly imported files automatically become the preview selection, including when another icon was already selected. The bottom area contains destination/PNG options and Finder, Diagnostics and conversion controls. Tests use a mock preview provider only to check presentation orchestration; real rendering continues to run in the separate Apple integration suite. Both redesigned app configurations compile, pass local signature verification and retain their distinct identifiers.

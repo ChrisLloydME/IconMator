@@ -13,5 +13,6 @@ struct IconMatorApp: App {
         WindowGroup {
             ContentView()
         }
+        .defaultSize(width: 640, height: 720)
     }
 }

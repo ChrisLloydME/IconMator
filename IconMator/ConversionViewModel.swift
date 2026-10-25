@@ -1,7 +1,6 @@
 import AppKit
 import IconConversionCore
 import Observation
-import UniformTypeIdentifiers
 
 struct ConversionJob: Identifiable {
     let id = UUID()
@@ -16,7 +15,11 @@ struct ConversionJob: Identifiable {
 @MainActor @Observable
 final class ConversionViewModel {
     var jobs: [ConversionJob] = []
-    var selection: UUID?
+    var selection: UUID? {
+        didSet {
+            if selection != oldValue { renderSelectedPreview() }
+        }
+    }
     var destination: URL?
     var exportPNG = false
     var tools: DeveloperTools?
@@ -34,8 +37,13 @@ final class ConversionViewModel {
     @ObservationIgnored private var previewGeneration = UUID()
     @ObservationIgnored private let externalToolsPermitted: Bool
     @ObservationIgnored private let service = IconConversionService()
+    @ObservationIgnored private let previewRenderer: @Sendable (URL, DeveloperTools) async throws -> Data
 
-    init(externalToolsPermitted: Bool? = nil) {
+    init(externalToolsPermitted: Bool? = nil,
+         previewRenderer: @escaping @Sendable (URL, DeveloperTools) async throws -> Data = { input, tools in
+             try await IconConversionService().preview(input: input, tools: tools)
+         }) {
+        self.previewRenderer = previewRenderer
         #if ICONMATOR_APP_SANDBOX_YES
         self.externalToolsPermitted = externalToolsPermitted ?? false
         #else
@@ -73,25 +81,32 @@ final class ConversionViewModel {
     func importFiles(_ urls: [URL]) {
         guard !isConverting else { return }
         var errors: [String] = []
+        var firstNew: UUID?
+        var firstExisting: UUID?
         for url in urls {
             let input = url.standardizedFileURL
-            guard !jobs.contains(where: { $0.input == input }) else { continue }
+            if let existing = jobs.first(where: { $0.input.path == input.path }) {
+                if firstExisting == nil { firstExisting = existing.id }
+                continue
+            }
             do {
                 try IconConversionService.validateInput(input)
-                jobs.append(ConversionJob(input: input))
+                let job = ConversionJob(input: input)
+                jobs.append(job)
+                if firstNew == nil { firstNew = job.id }
             } catch { errors.append("\(url.lastPathComponent): \(error.localizedDescription)") }
         }
         message = errors.isEmpty ? nil : errors.joined(separator: "\n")
-        if selection == nil { selection = jobs.first?.id }
+        selection = firstNew ?? firstExisting ?? selection ?? jobs.first?.id
     }
 
     func selectFiles() {
         let panel = NSOpenPanel()
-        panel.title = "Import Icon Composer files"
-        panel.canChooseFiles = true; panel.canChooseDirectories = false
-        panel.allowsMultipleSelection = true; panel.treatsFilePackagesAsDirectories = false
-        panel.allowedContentTypes = [UTType(filenameExtension: "icon") ?? .package]
-        if panel.runModal() == .OK { importFiles(panel.urls) }
+        let delegate = IconImportPanelDelegate()
+        IconImportPanelDelegate.configure(panel)
+        panel.delegate = delegate
+        let response = withExtendedLifetime(delegate) { panel.runModal() }
+        if response == .OK { importFiles(panel.urls) }
     }
 
     func chooseDestination() {
@@ -116,12 +131,13 @@ final class ConversionViewModel {
         isPreviewing = true
         previewTask = Task {
             do {
-                let data = try await service.preview(input: job.input, tools: tools)
+                let data = try await previewRenderer(job.input, tools)
                 try Task.checkCancellation()
                 if let index = jobs.firstIndex(where: { $0.id == id }) { jobs[index].preview = data; jobs[index].error = nil }
             } catch is CancellationError {
                 // Selection changes cancel this preview only.
             } catch {
+                guard !Task.isCancelled, previewGeneration == generation else { return }
                 if let index = jobs.firstIndex(where: { $0.id == id }) {
                     jobs[index].error = "Preview: \(error.localizedDescription)"
                     jobs[index].diagnostics = (error as? ConversionError)?.diagnostic ?? ""

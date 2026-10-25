@@ -1,0 +1,76 @@
+[0/1] Planning build
+Building for debugging...
+[0/4] Write swift-version--58304C5D6DBC2206.txt
+Build complete! (0.34s)
+Test Suite 'All tests' started at 2026-10-25 19:04:07.103.
+Test Suite 'All tests' passed at 2026-10-25 19:04:07.105.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite EngineTests started.
+􀟈  Suite ToolDiscoveryTests started.
+􀟈  Suite ImportWorkflowTests started.
+􀟈  Suite PresentationTests started.
+􀟈  Test invalidInputAndSymlinksAreRejected() started.
+􀟈  Suite AppleIntegrationTests started.
+􀟈  Test processTimeoutTerminatesTool() started.
+􀟈  Test unsupportedOrMissingToolchainFailsClearly() started.
+􀟈  Test processCanBeCancelled() started.
+􀟈  Suite ImageAnalysisTests started.
+􀟈  Test publisherPreparesAllOutputsBeforeChangingAny() started.
+􀟈  Test temporaryWorkspacesAreIsolatedAndCleaned() started.
+􀟈  Test atomicPublisherRefusesCollisionAndSupportsApprovedReplacement() started.
+􀟈  Test processArgumentsAreNotInterpretedByShell() started.
+􀟈  Test processDiagnosticsAndFailureArePropagated() started.
+􀟈  Test smallMasterIsNeverUpscaled() started.
+􀟈  Test discoversRelocatedXcodeAndHonorsAppOverride(useOverride:) started.
+􀟈  Test commandLineToolsDirectoryIsNotAcceptedAsFullXcode() started.
+􀟈  Test importingDeduplicatesAndRemovalKeepsSelectionValid() started.
+􀟈  Test invalidImportsHaveUnderstandableErrors() started.
+􀟈  Test batchNamesDoNotCollideOnCaseInsensitiveVolumes() started.
+􀟈  Test pickerAcceptsDirectoryDocumentsAndKeepsFoldersNavigable() started.
+􀟈  Test newImportIsSelectedAndAutomaticallyRequestsItsPreview() started.
+􀟈  Test sandboxedBuildDoesNotStartToolExecution() started.
+􀟈  Test realRenderingBatchCancellationAndInputPreservation() started.
+􀟈  Test installedToolsAndReferenceRoundTrip() started.
+􀟈  Test pickerRejectsMalformedIconDirectories() started.
+􀟈  Test duplicateImportSelectsExistingJobWithoutAddingAnother() started.
+􀟈  Test fullCanvasAlphaAndGeometry() started.
+􀟈  Test detectsAlphaDifferences() started.
+􀟈  Test doesNotHideCanvasChangesByCropping() started.
+􀟈  Test case passing 1 argument useOverride → false to discoversRelocatedXcodeAndHonorsAppOverride(useOverride:) started.
+􀟈  Test case passing 1 argument useOverride → true to discoversRelocatedXcodeAndHonorsAppOverride(useOverride:) started.
+􁁛  Test unsupportedOrMissingToolchainFailsClearly() passed after 0.010 seconds.
+􁁛  Test commandLineToolsDirectoryIsNotAcceptedAsFullXcode() passed after 0.010 seconds.
+􁁛  Test temporaryWorkspacesAreIsolatedAndCleaned() passed after 0.010 seconds.
+􁁛  Test invalidInputAndSymlinksAreRejected() passed after 0.010 seconds.
+􁁛  Test atomicPublisherRefusesCollisionAndSupportsApprovedReplacement() passed after 0.010 seconds.
+􁁛  Test processArgumentsAreNotInterpretedByShell() passed after 0.010 seconds.
+􁁛  Test processDiagnosticsAndFailureArePropagated() passed after 0.010 seconds.
+􁁛  Test discoversRelocatedXcodeAndHonorsAppOverride(useOverride:) with 2 test cases passed after 0.010 seconds.
+􁁛  Suite ToolDiscoveryTests passed after 0.011 seconds.
+􁁛  Test publisherPreparesAllOutputsBeforeChangingAny() passed after 0.014 seconds.
+􁁛  Test invalidImportsHaveUnderstandableErrors() passed after 0.019 seconds.
+􁁛  Test importingDeduplicatesAndRemovalKeepsSelectionValid() passed after 0.020 seconds.
+􁁛  Test pickerAcceptsDirectoryDocumentsAndKeepsFoldersNavigable() passed after 0.020 seconds.
+􁁛  Test sandboxedBuildDoesNotStartToolExecution() passed after 0.020 seconds.
+􁁛  Test duplicateImportSelectsExistingJobWithoutAddingAnother() passed after 0.020 seconds.
+􁁛  Test pickerRejectsMalformedIconDirectories() passed after 0.020 seconds.
+􁁛  Test batchNamesDoNotCollideOnCaseInsensitiveVolumes() passed after 0.020 seconds.
+􁁛  Suite PresentationTests passed after 0.020 seconds.
+􁁛  Test newImportIsSelectedAndAutomaticallyRequestsItsPreview() passed after 0.021 seconds.
+􁁛  Suite ImportWorkflowTests passed after 0.021 seconds.
+􁁛  Test doesNotHideCanvasCwarning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system.
+hangesByCropping() passed after 0.027 seconds.
+􁁛  Test smallMasterIsNeverUpscaled() passed after 0.027 seconds.
+􁁛  Test detectsAlphaDifferences() passed after 0.028 seconds.
+􁁛  Test fullCanvasAlphaAndGeometry() passed after 0.029 seconds.
+􁁛  Suite ImageAnalysisTests passed after 0.029 seconds.
+􁁛  Test processTimeoutTerminatesTool() passed after 0.057 seconds.
+􁁛  Test processCanBeCancelled() passed after 0.103 seconds.
+􁁛  Suite EngineTests passed after 0.103 seconds.
+􁁛  Test installedToolsAndReferenceRoundTrip() passed after 8.020 seconds.
+􁁛  Test realRenderingBatchCancellationAndInputPreservation() passed after 13.851 seconds.
+􁁛  Suite AppleIntegrationTests passed after 13.851 seconds.
+􁁛  Test run with 25 tests in 6 suites passed after 13.851 seconds.

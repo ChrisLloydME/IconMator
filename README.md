@@ -17,7 +17,7 @@ Run real-tool integration tests with `ICONMATOR_INTEGRATION=1 swift test`; these
 
 Conversion currently permits only macOS 27.0.1 (26A434) and Xcode 27.1 (27A9275), the environment measured against the reference. Other combinations report an actionable unsupported-toolchain error. Dark, Mono, and OS-generation selection remain unavailable. No software is downloaded at runtime.
 
-The SwiftUI app provides import/drop, selection, rendering preview, folder export, batch conversion, optional PNG, cancellation, diagnostics and Finder reveal. UI verification used source review, model tests and builds; no GUI was launched. Open `IconMator.xcodeproj` to build it.
+The SwiftUI app uses a single shared drop/import and preview area. New imports are selected and previewed automatically; multiple icons use a horizontal thumbnail tray. Export settings and Finder/diagnostic/conversion actions sit below the preview. The file picker accepts `.icon` directory packages independently of system type registration. Batch conversion, optional PNG and cancellation remain available. UI verification used source review, model tests and builds; no GUI was launched. Open `IconMator.xcodeproj` to build it.
 
 **Current app configuration:** With explicit user authorization, Debug and Release are local non-sandboxed developer builds (`ENABLE_APP_SANDBOX=NO`). Hardened Runtime remains enabled. No system security/privacy settings are changed, and Apple developer executables are resolved from the installed Xcode rather than embedded. If App Sandbox is re-enabled, the UI clearly disables this unvalidated execution configuration.
 

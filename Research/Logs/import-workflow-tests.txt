@@ -1,0 +1,38 @@
+[0/1] Planning build
+Building for debugging...
+[0/7] Write sources
+[2/7] Write swift-version--58304C5D6DBC2206.txt
+[4/8] Compiling IconMatorPresentation IconImportPanel.swift
+[5/8] Emitting module IconMatorPresentation
+[6/8] Compiling IconMatorPresentation ConversionViewModel.swift
+[7/11] Compiling IconMatorPresentationTests ImportWorkflowTests.swift
+[8/11] Emitting module IconMatorPresentationTests
+[9/11] Compiling IconMatorPresentationTests PresentationTests.swift
+[9/11] Write Objects.LinkFileList
+[10/11] Linking IconMatorPackageTests
+Build complete! (2.33s)
+warning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system.
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite ImportWorkflowTests started.
+􀟈  Suite PresentationTests started.
+􀟈  Test sandboxedBuildDoesNotStartToolExecution() started.
+􀟈  Test importingDeduplicatesAndRemovalKeepsSelectionValid() started.
+􀟈  Test duplicateImportSelectsExistingJobWithoutAddingAnother() started.
+􀟈  Test newImportIsSelectedAndAutomaticallyRequestsItsPreview() started.
+􀟈  Test invalidImportsHaveUnderstandableErrors() started.
+􀟈  Test pickerRejectsMalformedIconDirectories() started.
+􀟈  Test batchNamesDoNotCollideOnCaseInsensitiveVolumes() started.
+􀟈  Test pickerAcceptsDirectoryDocumentsAndKeepsFoldersNavigable() started.
+􁁛  Test importingDeduplicatesAndRemovalKeepsSelectionValid() passed after 0.004 seconds.
+􁁛  Test sandboxedBuildDoesNotStartToolExecution() passed after 0.005 seconds.
+􁁛  Test duplicateImportSelectsExistingJobWithoutAddingAnother() passed after 0.005 seconds.
+􁁛  Test invalidImportsHaveUnderstandableErrors() passed after 0.008 seconds.
+􁁛  Test pickerRejectsMalformedIconDirectories() passed after 0.008 seconds.
+􁁛  Test pickerAcceptsDirectoryDocumentsAndKeepsFoldersNavigable() passed after 0.008 seconds.
+􁁛  Test batchNamesDoNotCollideOnCaseInsensitiveVolumes() passed after 0.008 seconds.
+􁁛  Suite PresentationTests passed after 0.008 seconds.
+􁁛  Test newImportIsSelectedAndAutomaticallyRequestsItsPreview() passed after 0.009 seconds.
+􁁛  Suite ImportWorkflowTests passed after 0.009 seconds.
+􁁛  Test run with 8 tests in 2 suites passed after 0.009 seconds.

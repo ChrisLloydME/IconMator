@@ -13,7 +13,7 @@ let package = Package(
         .executableTarget(name: "iconmator", dependencies: ["IconConversionCore"]),
         .testTarget(name: "IconConversionCoreTests", dependencies: ["IconConversionCore"]),
         .target(name: "IconMatorPresentation", dependencies: ["IconConversionCore"], path: "IconMator",
-            exclude: ["Assets.xcassets", "ContentView.swift", "IconMatorApp.swift"], sources: ["ConversionViewModel.swift"]),
+            exclude: ["Assets.xcassets", "ContentView.swift", "IconMatorApp.swift"], sources: ["ConversionViewModel.swift", "IconImportPanel.swift"]),
         .testTarget(name: "IconMatorPresentationTests", dependencies: ["IconMatorPresentation", "IconConversionCore"])
     ]
 )
