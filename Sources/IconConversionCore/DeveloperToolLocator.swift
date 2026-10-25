@@ -39,10 +39,13 @@ public struct DeveloperTools: Codable, Sendable {
 
 public struct DeveloperToolLocator: Sendable {
     private let runner: any ProcessRunning
-    public init(runner: any ProcessRunning = ProcessRunner()) { self.runner = runner }
+    private let environment: [String: String]
+    public init(runner: any ProcessRunning = ProcessRunner(), environment: [String: String] = ProcessInfo.processInfo.environment) {
+        self.runner = runner; self.environment = environment
+    }
 
     public func locate() async throws -> DeveloperTools {
-        let env = ProcessInfo.processInfo.environment
+        let env = environment
         let selection: String
         if let override = env["DEVELOPER_DIR"], !override.isEmpty {
             let url = URL(fileURLWithPath: override).standardizedFileURL

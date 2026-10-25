@@ -1,0 +1,13 @@
+[0/1] Planning build
+Building for debugging...
+[0/5] Write sources
+[2/5] Write swift-version--58304C5D6DBC2206.txt
+[4/7] Emitting module IconConversionCore
+[5/7] Compiling IconConversionCore ConversionError.swift
+[6/10] Emitting module iconmator
+[7/10] Compiling iconmator main.swift
+[7/10] Write Objects.LinkFileList
+[8/10] Linking iconmator
+[9/10] Applying iconmator
+Build complete! (1.46s)
+warning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system.

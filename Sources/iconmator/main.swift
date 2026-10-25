@@ -16,7 +16,8 @@ import IconConversionCore
                 let tools = try await DeveloperToolLocator().locate()
                 print(String(decoding: try encoder.encode(tools), as: UTF8.self))
             } else if args.count >= 3, args[0] == "convert" || args[0] == "package-png" {
-                guard args.dropFirst(3).allSatisfy({ ["--replace", "--png"].contains($0) }) else {
+                let options = args[0] == "convert" ? ["--replace", "--png", "--diagnostics"] : ["--replace"]
+                guard args.dropFirst(3).allSatisfy({ options.contains($0) }) else {
                     throw ConversionError.invalidInput("Unknown option.")
                 }
                 let input = URL(fileURLWithPath: args[1]), output = URL(fileURLWithPath: args[2])
@@ -30,9 +31,10 @@ import IconConversionCore
                     }
                     print(result.icns.path)
                     print(result.environment)
+                    if args.contains("--diagnostics") { print(result.diagnostics) }
                 }
             } else {
-                throw ConversionError.invalidInput("Usage: iconmator tools | inspect image.png | compare reference.png candidate.png directory | convert input.icon output.icns [--png] [--replace] | package-png input.png output.icns [--replace]")
+                throw ConversionError.invalidInput("Usage: iconmator tools | inspect image.png | compare reference.png candidate.png directory | convert input.icon output.icns [--png] [--replace] [--diagnostics] | package-png input.png output.icns [--replace]")
             }
         } catch {
             FileHandle.standardError.write(Data((error.localizedDescription + "\n").utf8))

@@ -1,0 +1,20 @@
+Checking input and tools
+Compiling and rendering icon
+Packaging and verifying ICNS
+Saving verified output
+/Users/lloyd/Developer/IconMator/.research/Controls/Metadatics.icns
+macOS 27.0.1 (26A434); Xcode 27.1
+Build version 27A9275; Default (current system renderer)
+/* com.apple.actool.compilation-results */
+/var/folders/gx/w1cq6f8j41sdgkfp0c5ndb_m0000gn/T/IconMator-B1AE9F06-1CC7-4A61-8D02-4CCFA6BFB63E/Render-6CC80210-A0A5-44D0-857D-1B187E2516E8.app/Contents/Resources/AppIcon.icns
+/var/folders/gx/w1cq6f8j41sdgkfp0c5ndb_m0000gn/T/IconMator-B1AE9F06-1CC7-4A61-8D02-4CCFA6BFB63E/Render-6CC80210-A0A5-44D0-857D-1B187E2516E8.app/Contents/Resources/Assets.car
+/var/folders/gx/w1cq6f8j41sdgkfp0c5ndb_m0000gn/T/IconMator-B1AE9F06-1CC7-4A61-8D02-4CCFA6BFB63E/partial.plist
+
+System request 1024px: source 1024×1024, 16 bits/component
+System request 512px: source 1024×1024, 16 bits/component
+System request 256px: source 512×512, 16 bits/component
+System request 128px: source 256×256, 16 bits/component
+System request 64px: source 128×128, 16 bits/component
+System request 32px: source 64×64, 16 bits/component
+System request 16px: source 32×32, 16 bits/component
+

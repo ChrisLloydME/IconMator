@@ -123,3 +123,21 @@ Multiple local sources are structural controls, but only one Finder reference is
 - [CodexBar build script](https://github.com/steipete/CodexBar/blob/main/Scripts/build_icon.sh) — reviewed; its 824+padding method is not copied.
 - [Apple Icon Composer](https://developer.apple.com/icon-composer/) — current materials, generation and appearance context.
 - [Creating your app icon](https://developer.apple.com/documentation/xcode/creating-your-app-icon-using-icon-composer) and [build settings](https://developer.apple.com/documentation/xcode/build-settings-reference) — online detail pages require JS; local actool manual and Xcode build specification provide directly inspectable command evidence.
+
+## Per-resolution extraction observed
+
+The production backend's diagnostic run (`Research/Logs/convert-Metadatics-diagnostics.txt`) recorded:
+
+| Requested physical pixels | IconServices source pixels | Source component depth |
+| --- | --- | --- |
+| 1024 | 1024 | 16-bit float |
+| 512 | 1024 | 16-bit float |
+| 256 | 512 | 16-bit float |
+| 128 | 256 | 16-bit float |
+| 64 | 128 | 16-bit float |
+| 32 | 64 | 16-bit float |
+| 16 | 32 | 16-bit float |
+
+Thus the backend requests each size from IconServices and downsamples the returned native source when necessary; it does not derive every rendition by repeatedly scaling one 1024 image. No source is upscaled. The 1024 export remains a full-canvas 1:1 render. These dimensions are observations for this host, not a promise of future API behavior.
+
+Final full conversions of Tunes, AudioMator and SwiftBiomes also passed the exact per-rendition decode gate. They remain structural controls without paired Finder references.

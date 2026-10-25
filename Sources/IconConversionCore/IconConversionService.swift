@@ -13,6 +13,7 @@ public struct ConversionResult: Sendable {
     public let png: URL?
     public let environment: String
     public let diagnostics: String
+    public let previewPNG: Data
 }
 
 public struct IconConversionService: Sendable {
@@ -68,10 +69,28 @@ public struct IconConversionService: Sendable {
         let icns = try await ICNSBuilder(runner: runner).package(iconset: rendered.iconset, workspace: workspace.url, tool: tools.iconutil)
         try Task.checkCancellation()
         await progress(.exporting)
+        let previewPNG = try Data(contentsOf: rendered.masterPNG)
         try OutputPublisher.publish(files: [(icns, destination)] + (exportPNG ? [(rendered.masterPNG, outputs[1])] : []), overwrite: overwrite)
         return ConversionResult(icns: destination, png: exportPNG ? outputs[1] : nil,
             environment: "macOS \(tools.operatingSystem); \(tools.xcodeVersion.trimmingCharacters(in: .whitespacesAndNewlines)); Default (current system renderer)",
-            diagnostics: rendered.diagnostics)
+            diagnostics: rendered.diagnostics, previewPNG: previewPNG)
+    }
+
+    public func preview(input: URL, tools: DeveloperTools) async throws -> Data {
+        try Task.checkCancellation()
+        try Self.validateInput(input)
+        try tools.validatePinnedTools()
+        let current = try await DeveloperToolLocator(runner: runner).locate()
+        guard current.developerDirectory == tools.developerDirectory, current.xcodeVersion == tools.xcodeVersion,
+              current.operatingSystem == tools.operatingSystem else {
+            throw ConversionError.unsupportedTool("The selected developer tools changed. Recheck developer tools.")
+        }
+        try tools.requireResearchedEnvironment()
+        let workspace = try TemporaryWorkspace()
+        defer { workspace.cleanUp() }
+        let rendered = try await backend.render(input: input, workspace: workspace.url, tools: tools)
+        try Task.checkCancellation()
+        return try Data(contentsOf: rendered.masterPNG)
     }
 
     /// Development/reference path: package an already-rendered PNG without adding margins or changing the master.
@@ -92,13 +111,18 @@ public struct IconConversionService: Sendable {
     }
 }
 
-public final class TemporaryWorkspace: Sendable {
+public final class TemporaryWorkspace: @unchecked Sendable {
     public let url: URL
+    private let lock = NSLock()
+    private var shouldCleanUp = true
     public init(parent: URL = FileManager.default.temporaryDirectory) throws {
         url = parent.appendingPathComponent("IconMator-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: url, withIntermediateDirectories: false, attributes: [.posixPermissions: 0o700])
     }
-    public func cleanUp() { try? FileManager.default.removeItem(at: url) }
+    public func preserveForRecovery() { lock.withLock { shouldCleanUp = false } }
+    public func cleanUp() {
+        lock.withLock { if shouldCleanUp { try? FileManager.default.removeItem(at: url) } }
+    }
     deinit { cleanUp() }
 }
 
@@ -142,12 +166,18 @@ public enum OutputPublisher {
                 published.append(file)
             }
         } catch {
+            var recoveryRequired = false
             for file in published.reversed() {
                 if let backup = file.backup {
-                    _ = backup.withUnsafeFileSystemRepresentation { source in
+                    let result = backup.withUnsafeFileSystemRepresentation { source in
                         file.destination.withUnsafeFileSystemRepresentation { destination in rename(source!, destination!) }
                     }
+                    if result != 0 { recoveryRequired = true }
                 } else { try? FileManager.default.removeItem(at: file.destination) }
+            }
+            if recoveryRequired {
+                stage.preserveForRecovery()
+                throw ConversionError.validation("Export failed and an original could not be restored. Recovery backups were preserved at \(stage.url.path).")
             }
             throw error
         }

@@ -61,7 +61,7 @@ public struct ProcessRunner: ProcessRunning {
                 DispatchQueue.global(qos: .userInitiated).async {
                     let log = FileManager.default.temporaryDirectory.appendingPathComponent("IconMator-process-\(UUID().uuidString).log")
                     do {
-                        guard FileManager.default.createFile(atPath: log.path, contents: nil) else {
+                        guard FileManager.default.createFile(atPath: log.path, contents: nil, attributes: [.posixPermissions: 0o600]) else {
                             throw ConversionError.validation("Cannot create a temporary process log.")
                         }
                         defer { try? FileManager.default.removeItem(at: log) }

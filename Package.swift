@@ -11,6 +11,9 @@ let package = Package(
     targets: [
         .target(name: "IconConversionCore"),
         .executableTarget(name: "iconmator", dependencies: ["IconConversionCore"]),
-        .testTarget(name: "IconConversionCoreTests", dependencies: ["IconConversionCore"])
+        .testTarget(name: "IconConversionCoreTests", dependencies: ["IconConversionCore"]),
+        .target(name: "IconMatorPresentation", dependencies: ["IconConversionCore"], path: "IconMator",
+            exclude: ["Assets.xcassets", "ContentView.swift", "IconMatorApp.swift"], sources: ["ConversionViewModel.swift"]),
+        .testTarget(name: "IconMatorPresentationTests", dependencies: ["IconMatorPresentation", "IconConversionCore"])
     ]
 )

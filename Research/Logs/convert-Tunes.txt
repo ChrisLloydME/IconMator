@@ -1,0 +1,7 @@
+Checking input and tools
+Compiling and rendering icon
+Packaging and verifying ICNS
+Saving verified output
+/Users/lloyd/Developer/IconMator/.research/Controls/Tunes.icns
+macOS 27.0.1 (26A434); Xcode 27.1
+Build version 27A9275; Default (current system renderer)

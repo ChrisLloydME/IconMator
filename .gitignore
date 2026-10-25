@@ -5,3 +5,5 @@ ReferenceInputs/
 DerivedData/
 *.xcuserstate
 Research/Comparisons/**/*.png
+
+.swiftpm/xcode/xcuserdata/

@@ -6,6 +6,10 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+        C0DE00000000000000000001 /* IconConversionCore in Frameworks */ = {isa = PBXBuildFile; productRef = C0DE00000000000000000002 /* IconConversionCore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		6EA1E613308E0AC60034FE14 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -51,6 +55,7 @@
 		6EA1E602308E0AC40034FE14 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				C0DE00000000000000000001 /* IconConversionCore in Frameworks */,
 			);
 		};
 		6EA1E60F308E0AC60034FE14 /* Frameworks */ = {
@@ -103,6 +108,7 @@
 				6EA1E607308E0AC40034FE14 /* IconMator */,
 			);
 			name = IconMator;
+			packageProductDependencies = (C0DE00000000000000000002 /* IconConversionCore */);
 			productName = IconMator;
 			productReference = 6EA1E605308E0AC40034FE14 /* IconMator.app */;
 			productType = "com.apple.product-type.application";
@@ -182,6 +188,7 @@
 			mainGroup = 6EA1E5FC308E0AC40034FE14;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
+			packageReferences = (C0DE00000000000000000003 /* Local package */);
 			productRefGroup = 6EA1E606308E0AC40034FE14 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -241,6 +248,13 @@
 			targetProxy = 6EA1E61D308E0AC60034FE14 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin XCLocalSwiftPackageReference section */
+        C0DE00000000000000000003 /* Local package */ = {isa = XCLocalSwiftPackageReference; relativePath = .; };
+/* End XCLocalSwiftPackageReference section */
+/* Begin XCSwiftPackageProductDependency section */
+        C0DE00000000000000000002 /* IconConversionCore */ = {isa = XCSwiftPackageProductDependency; package = C0DE00000000000000000003 /* Local package */; productName = IconConversionCore; };
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCBuildConfiguration section */
 		6EA1E622308E0AC60034FE14 /* Debug configuration for PBXProject "IconMator" */ = {
@@ -372,12 +386,13 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = YM5G2M8PV9;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ICONMATOR_APP_SANDBOX_$(ENABLE_APP_SANDBOX)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -404,12 +419,13 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = YM5G2M8PV9;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ICONMATOR_APP_SANDBOX_$(ENABLE_APP_SANDBOX)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
