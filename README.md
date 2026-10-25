@@ -1,37 +1,69 @@
-# IconMator
+<p align="center">
+  <img src="Docs/Images/AppIcon-1024x1024@1x.png" alt="IconMator app icon" width="240">
+</p>
 
-Native macOS Icon Composer → static ICNS utility. The conversion prototype compiles Apple assets, obtains the current Default appearance through public system icon rendering, and independently verifies every ICNS rendition. Rendering is numerically close to the supplied Finder reference, not pixel-identical; visual acceptance is still outstanding.
+<h1 align="center">IconMator</h1>
 
-Requirements: macOS 26+, full Xcode. Research performed on macOS 27.0.1 and Xcode 27.1. No network dependency or third-party packages.
+<p align="center">
+  <strong>.icon → .icns</strong><br>
+  Native macOS Icon Converter
+</p>
 
-Build the command-line research utility with `swift build`. Run `swift test` for non-GUI image-comparison tests. With the native SwiftPM build system, the executable is `.build/debug/iconmator` (or the chosen scratch path). `iconmator inspect image.png` reports full-canvas geometry; `iconmator compare reference.png candidate.png directory` writes metrics, a difference PNG, and a side-by-side PNG. Comparison normalizes to 8-bit sRGB and preserves original files.
+<p align="center">
+  <img alt="Validated on macOS 27.0.1" src="https://img.shields.io/badge/macOS-27.0.1-black?style=for-the-badge&amp;logo=apple">
+  <img alt="Swift" src="https://img.shields.io/badge/Swift-orange?style=for-the-badge&amp;logo=swift">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge"></a>
+</p>
 
-See [RENDERING_RESEARCH.md](RENDERING_RESEARCH.md) for experimental evidence and outstanding gates. User-supplied references and temporary builds are intentionally Git-ignored.
+IconMator converts Apple Icon Composer `.icon` documents into static `.icns` files using Apple's local rendering tools. Import an icon, preview it, and export without creating an Xcode project or copying images from Finder.
 
-The Xcode app retains the Release identifier `com.lloydME.IconMator`; Debug uses `com.lloydME.IconMator.beta`. The visible application name remains IconMator. The deployment target is macOS 26.
+## Features
 
+- Drag and drop or choose `.icon` files, with automatic previews.
+- Convert individual icons or batches with collision-safe filenames.
+- Export ten standard ICNS representations through 1024 × 1024, preserving transparency.
+- Optionally save the same 1024 × 1024 PNG used by the ICNS.
+- Cancel work, inspect diagnostics, and reveal verified exports in Finder.
 
-CLI conversion: `iconmator convert input.icon output.icns --png`. Existing files are refused unless `--replace` is explicitly supplied. `iconmator package-png master.png output.icns` creates the reference ICNS from an existing 1024² RGBA PNG without changing the master. `iconmator tools` prints the discovered toolchain.
+Conversion runs locally, without network access or third-party package dependencies. Source documents are never modified. The output is a static appearance snapshot, not a replacement for Icon Composer's editable layers or runtime materials.
 
-Run real-tool integration tests with `ICONMATOR_INTEGRATION=1 swift test`; these require the ignored `ReferenceInputs/Metadatics` fixture folder. Tests are skipped explicitly by default; no rendering output is mocked. In this environment SwiftPM's native build system was used (`--build-system native --scratch-path .build/native`), with executable `.build/native/debug/iconmator`.
+## Requirements and Status
 
-Conversion currently permits only macOS 27.0.1 (26A434) and Xcode 27.1 (27A9275), the environment measured against the reference. Other combinations report an actionable unsupported-toolchain error. Dark, Mono, and OS-generation selection remain unavailable. No software is downloaded at runtime.
+Conversion is currently enabled only on **macOS 27.0.1 (26A434) with Xcode 27.1 (27A9275)**. Other environments and Dark/Mono/OS-generation choices remain disabled until validated.
 
-The SwiftUI app uses a single shared drop/import and preview area. New imports are selected and previewed automatically; multiple icons use a horizontal thumbnail tray. Export settings and Finder/diagnostic/conversion actions sit below the preview. The file picker accepts `.icon` directory packages independently of system type registration. Batch conversion, optional PNG and cancellation remain available. UI verification used source review, model tests and builds; no GUI was launched. Closing the last main window quits the app. Open `IconMator.xcodeproj` to build it.
+Rendering is numerically close to the supplied Finder reference, but is not pixel-identical. See the [validation report](Docs/Research/VALIDATION_REPORT.md) for measurements and remaining checks. The app targets macOS 26+, but that deployment target does not imply validated conversion on every supported OS.
 
-**Current app configuration:** With explicit user authorization, Debug and Release are local non-sandboxed developer builds (`ENABLE_APP_SANDBOX=NO`). Hardened Runtime remains enabled. No system security/privacy settings are changed, and Apple developer executables are resolved from the installed Xcode rather than embedded. If App Sandbox is re-enabled, the UI clearly disables this unvalidated execution configuration.
+## Usage
 
-Example artwork is not distributed in the repository. Reference measurements remain in [VALIDATION_REPORT.md](VALIDATION_REPORT.md); reproduce outputs locally using reference inputs you are authorized to use. See [ARCHITECTURE.md](ARCHITECTURE.md) for components, file safety and distribution constraints.
+1. Import `.icon` documents using the shared drop/preview area.
+2. Select an export folder and optionally enable **Include PNG**.
+3. Choose **Convert to ICNS** or **Convert All**.
 
+Existing exports require confirmation before replacement. Closing the last main window quits the app.
 
-Both configurations were also built and ad-hoc signed locally using `xcodebuild -project IconMator.xcodeproj -scheme IconMator -configuration Debug -derivedDataPath .research/AppDerived CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual build` (substitute Release as needed). The resulting apps are under `.research/AppDerived/Build/Products/Debug` and `Release`. Signing permissions and bundle identifiers were inspected without launching them. Ad-hoc signing supports local use; it is not notarized distribution.
+## Build From Source
 
+Open `IconMator.xcodeproj`, select the **IconMator** scheme, and build. Both Debug and Release use a local non-sandboxed configuration with Hardened Runtime; they have separate bundle identifiers so they can coexist.
+
+For the command-line converter:
+
+```sh
+swift build --build-system native --scratch-path .build/native
+.build/native/debug/iconmator convert "AppIcon.icon" "AppIcon.icns" --png
+```
+
+See [Development](Docs/DEVELOPMENT.md) for app builds, tool discovery, signing, CLI commands, and automated tests. The repository does not provide notarized release packaging.
+
+## Documentation
+
+Start at [Docs/README.md](Docs/README.md).
+
+- [Development and CLI](Docs/DEVELOPMENT.md)
+- [Architecture](Docs/ARCHITECTURE.md)
+- [Rendering research](Docs/Research/RENDERING_RESEARCH.md)
+- [Validation report](Docs/Research/VALIDATION_REPORT.md)
+- [Third-party notices](Docs/THIRD_PARTY_NOTICES.md)
 
 ## License
 
-IconMator's original code and documentation are licensed under [MIT](LICENSE),
-copyright 2026 Chris Lloyd. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
-for the dependency review, system/toolchain components and excluded materials.
-Converted artwork retains its original rights; conversion does not make it MIT.
-
-The application icon is built directly from `IconMator/AppIcon.icon` with Apple's asset compiler, including a full-size standalone ICNS fallback. No Downloads path is required at build time.
+Original code and documentation are licensed under [MIT](LICENSE), copyright 2026 Chris Lloyd. Application artwork, system components and converted images retain their respective rights; see [Third-party notices](Docs/THIRD_PARTY_NOTICES.md).

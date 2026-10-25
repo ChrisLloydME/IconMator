@@ -53,7 +53,7 @@ swift test --build-system native --scratch-path .build/native
 .build/native/debug/iconmator compare REFERENCE.png CANDIDATE.png COMPARISON_DIRECTORY
 ```
 
-`Research/Logs` preserves compiler/tool diagnostics. Initial sandbox failures and the initial Swift initialization error are distinguished from successful reruns. No padding/scaling was applied in these experiments. Original sources are untouched; local copies and compiled artifacts live under ignored `.research/` and `ReferenceInputs/`.
+`Docs/Research/Logs` preserves compiler/tool diagnostics. Initial sandbox failures and the initial Swift initialization error are distinguished from successful reruns. No padding/scaling was applied in these experiments. Original sources are untouched; local copies and compiled artifacts live under ignored `.research/` and `ReferenceInputs/`.
 
 ## Results so far
 
@@ -68,7 +68,7 @@ Four real sources tested: user-provided Metadatics (three translucent layers, P3
 | Metadatics actool vs Finder PNG | Alpha >=128 bounds both (100,100,824,824); RGBA MAE 6.8642; alpha MAE 2.6591 | Same nominal solid geometry does not prove rendering fidelity; candidate not accepted |
 | Supplied ICNS | Excluded following user clarification | The PNG alone defines the desired appearance |
 
-All errors above are measured over the **entire** 1024² canvas after 8-bit premultiplied sRGB normalization. Source images remain unchanged. Alpha >=1 includes shadows; alpha >=128 describes the stronger silhouette. JSON results and generated difference/side-by-side PNGs are under `Research/Comparisons`. The comparison does not automatically label a non-exact result a close match.
+All errors above are measured over the **entire** 1024² canvas after 8-bit premultiplied sRGB normalization. Source images remain unchanged. Alpha >=1 includes shadows; alpha >=128 describes the stronger silhouette. JSON results and generated difference/side-by-side PNGs are under `Docs/Research/Comparisons`. The comparison does not automatically label a non-exact result a close match.
 
 The reference PNG has no embedded profile; ImageIO interprets it as sRGB. This limits attribution of color differences. Alpha/geometry mismatches cannot be explained by RGB color profiles alone.
 
@@ -105,7 +105,7 @@ The user confirmed that `Metadatics.png` is the target and the supplied `.icns` 
 
 A real round-trip test revealed iconutil 27-era behavior on this host: `ic04` and `ic05` ARGB chunks change partially transparent RGB values while preserving alpha (16px example: max normalized delta 61, MAE 3.25293/255). Allowing that error would defeat the packaging gate.
 
-Experiments retained under `Research/Comparisons/Packaging-*` demonstrate that explicitly encoding **premultiplied** ARGB channel planes in the actual `ic04`/`ic05` codec fixes the defect: exact normalized matches after independent iconutil decoding at 16 and 32 pixels. Other renditions preserve their original PNG payloads. An attempted `icp4` PNG alternative was rejected because the local decoder did not preserve it. A straight-alpha ARGB experiment was also rejected. These rejected encoders are not used by the application.
+Experiments retained under `Docs/Research/Comparisons/Packaging-*` demonstrate that explicitly encoding **premultiplied** ARGB channel planes in the actual `ic04`/`ic05` codec fixes the defect: exact normalized matches after independent iconutil decoding at 16 and 32 pixels. Other renditions preserve their original PNG payloads. An attempted `icp4` PNG alternative was rejected because the local decoder did not preserve it. A straight-alpha ARGB experiment was also rejected. These rejected encoders are not used by the application.
 
 `IconFamilyEncoder` now writes the same conventional chunk types observed in Apple's own output: ic04, ic11, ic05, ic12, ic07, ic13, ic08, ic14, ic09, ic10. ARGB uses literal RLE packets; no third-party codec is bundled. Every generated file still passes the independent ten-rendition pixel gate; unexpected codec changes cause a failure rather than degraded output.
 
@@ -126,7 +126,7 @@ Multiple local sources are structural controls, but only one Finder reference is
 
 ## Per-resolution extraction observed
 
-The production backend's diagnostic run (`Research/Logs/convert-Metadatics-diagnostics.txt`) recorded:
+The production backend's diagnostic run (`Docs/Research/Logs/convert-Metadatics-diagnostics.txt`) recorded:
 
 | Requested physical pixels | IconServices source pixels | Source component depth |
 | --- | --- | --- |

@@ -1,8 +1,8 @@
 # Licensing and third-party review
 
 Reviewed on 2026-10-25. IconMator's original application code, conversion library,
-CLI, tests and original documentation use the [MIT License](LICENSE), copyright
-2026 Chris Lloyd. This does not relicense Apple's software/documentation, system
+CLI, tests and original documentation use the [MIT License](https://opensource.org/license/mit), copyright
+2026 Chris Lloyd (see the LICENSE file at the repository root or in the app resources). This does not relicense Apple's software/documentation, system
 symbols, user-provided artwork or other third-party material.
 
 ## Application dependencies
@@ -41,8 +41,8 @@ components, review their exact versions and notices before distribution.
 
 ## Artwork and external documentation
 
-`IconMator/AppIcon.icon` is the application icon supplied by the maintainer for
-use as IconMator branding. Its artwork is excluded from the software MIT grant
+`IconMator/AppIcon.icon` and its documentation export in `Docs/Images/` are supplied by the maintainer for
+use as IconMator branding. This artwork is excluded from the software MIT grant
 unless the rights holder separately licenses it. The project compiles this
 original Icon Composer document directly; it is distinct from the removed
 third-party research examples.

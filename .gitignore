@@ -5,6 +5,7 @@ ReferenceInputs/
 DerivedData/
 *.xcuserstate
 Research/Comparisons/**/*.png
+Docs/Research/Comparisons/**/*.png
 
 .swiftpm/xcode/xcuserdata/
 
@@ -13,3 +14,4 @@ Examples/
 
 # Do not redistribute copied Apple documentation.
 Research/Logs/actool-man.txt
+Docs/Research/Logs/actool-man.txt

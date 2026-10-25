@@ -8,14 +8,14 @@ Status: conversion engine and frontend implementation exist and compile. The eng
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Debug application build, local ad-hoc signing | PASS | Research/Logs/ui-redesign-debug-build.txt |
-| Release application build, local ad-hoc signing | PASS | Research/Logs/ui-redesign-release-build.txt |
+| Debug application build, local ad-hoc signing | PASS | [ui-redesign-debug-build.txt](Logs/ui-redesign-debug-build.txt) |
+| Release application build, local ad-hoc signing | PASS | [ui-redesign-release-build.txt](Logs/ui-redesign-release-build.txt) |
 | Debug generated CFBundleIdentifier | com.lloydME.IconMator.beta | Inspected built Debug Info.plist with PlistBuddy |
 | Release generated CFBundleIdentifier | com.lloydME.IconMator | Inspected built Release Info.plist with PlistBuddy |
-| Full Swift test suite including real-tool integration | 25 tests PASS, 6 suites | Research/Logs/ui-redesign-tests.txt |
-| PNG reference → ICNS → independent iconutil decode | Exact normalized 1024 RGBA match; all ten source renditions retained | Research/Comparisons/Final-reference-roundtrip/comparison.json |
-| Metadatics .icon → ICNS + PNG | PASS structural and packaging gates; reference differences below | Research/Logs/convert-Metadatics.txt |
-| Tunes, AudioMator, SwiftBiomes complete conversion | PASS; all ten decoded renditions compared internally | Research/Logs/convert-*.txt |
+| Full Swift test suite including real-tool integration | 25 tests PASS, 6 suites | [ui-redesign-tests.txt](Logs/ui-redesign-tests.txt) |
+| PNG reference → ICNS → independent iconutil decode | Exact normalized 1024 RGBA match; all ten source renditions retained | [comparison.json](Comparisons/Final-reference-roundtrip/comparison.json) |
+| Metadatics .icon → ICNS + PNG | PASS structural and packaging gates; reference differences below | [convert-Metadatics.txt](Logs/convert-Metadatics.txt) |
+| Tunes, AudioMator, SwiftBiomes complete conversion | PASS; all ten decoded renditions compared internally | Docs/Research/Logs/convert-*.txt |
 | Two simultaneous real rendering jobs | PASS; distinct outputs, preserved input bytes | AppleIntegrationTests |
 | Spaces, Unicode and shell-special characters | PASS | Real integration input path and Process argument test |
 | Cancellation and timeout | PASS | Real process tests; rendering-orchestration cancellation leaves no completed output |
@@ -28,7 +28,7 @@ Status: conversion engine and frontend implementation exist and compile. The eng
 | UI layout/flow source review | Reviewed | ContentView.swift, ConversionViewModel.swift and IconImportPanel.swift |
 | Finder custom-icon visual display, multi-scale visual review | NOT PERFORMED | No GUI verification per instruction |
 | macOS 26 runtime, other Xcode/host builds, Dark/Mono/generation selection | NOT VALIDATED; unavailable | Exact environment gate |
-| Actual local app entitlements and Hardened Runtime | Inspected after ad-hoc signing; no App Sandbox entitlement | Research/Logs/*entitlements.txt, release-signature.txt |
+| Actual local app entitlements and Hardened Runtime | Inspected after ad-hoc signing; no App Sandbox entitlement | Docs/Research/Logs/*entitlements.txt, release-signature.txt |
 | Sandboxed app execution, Developer ID/notarization/distribution | NOT VALIDATED | Explicit scope limitation |
 
 Commands:
@@ -61,7 +61,7 @@ The target is the user-confirmed `ReferenceInputs/Metadatics/Metadatics.png`. Th
 
 The extreme shadow fringe differs at alpha level 1; no arbitrary padding, scaling or color compensation was applied. This is not a claim of pixel-perfect source rendering. The final ICNS packaging itself is lossless after the explicit comparison normalization for all ten representations on every successful conversion. Original reference and output files are preserved.
 
-The engine's metric comparison utility conservatively labels every non-exact comparison as requiring visual review. Reports and difference/side-by-side PNGs are generated under Research/Comparisons; PNG comparison artifacts are Git-ignored and remain local. No screenshots were taken and no native app was launched for inspection.
+The engine's metric comparison utility conservatively labels every non-exact comparison as requiring visual review. Reports and difference/side-by-side PNGs are generated under Docs/Research/Comparisons; PNG comparison artifacts are Git-ignored and remain local. No screenshots were taken and no native app was launched for inspection.
 
 ## Dataset and scope gaps
 
