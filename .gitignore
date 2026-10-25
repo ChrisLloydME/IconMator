@@ -7,7 +7,8 @@ DerivedData/
 Research/Comparisons/**/*.png
 Docs/Research/Comparisons/**/*.png
 
-.swiftpm/xcode/xcuserdata/
+# Xcode per-user state stays local.
+**/xcuserdata/
 
 # Private or regenerated example artwork must not be redistributed.
 Examples/
