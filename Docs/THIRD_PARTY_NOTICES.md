@@ -39,6 +39,10 @@ components, review their exact versions and notices before distribution.
 - The ICNS encoder is implemented here from format experiments with Apple's
   output. No external ICNS library was copied or linked.
 
+- [AudioMator](https://github.com/ChrisLloydME/AudioMator) was consulted as a
+  visual layout reference for the Diagnostics sheet. No AudioMator source code,
+  assets or dependencies were imported.
+
 ## Artwork and external documentation
 
 `IconMator/AppIcon.icon` and its documentation export in `Docs/Images/` are supplied by the maintainer for

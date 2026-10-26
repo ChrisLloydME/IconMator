@@ -4,6 +4,25 @@ Date: 2026-10-26. Host: macOS 27.0.1 (26A434), Xcode 27.1 (27A9275), arm64.
 
 Status: conversion engine and frontend implementation exist and compile. Default, Dark, Mono and both macOS rendering generations have real-output validation; **full product acceptance remains open**. The user explicitly authorized local non-sandboxed app builds; both configurations are rebuilt and ad-hoc signed. This report does not claim interactive GUI, Finder display, a macOS 26 host run or independent Finder references for every combination.
 
+## Native-material window update
+
+The presentation now uses SwiftUI's native `containerBackground(.thinMaterial,
+for: .window)`, with compact generation/appearance menus in the header, a shared
+transparent import/preview area, one export-destination/PNG row, and fixed-height
+footer progress. The window defaults to 560 × 620 points. Rendering and conversion
+logic are unchanged. Debug/Release builds and the existing non-integration test
+suite passed; source review checked control bindings, fixed-height progress and
+bounded thumbnail layout. The Apple rendering suite was not repeated for this
+presentation-only change. No app was launched or screenshot taken.
+
+Diagnostics was subsequently extracted into its own 520 × 560 native-material
+sheet with a fixed heading/footer, compact environment grid, two-row capability
+matrix, deduplicated unavailable reasons, conversion log and Copy Report action.
+AudioMator's Acknowledgements layout was consulted without importing source.
+Debug/Release builds and existing non-integration tests passed; clipboard and
+sheet interaction were source-reviewed only, with no GUI verification.
+
+
 ## SDK 27 compatibility policy update
 
 The exact host/Xcode build gate has been replaced with a check of the selected

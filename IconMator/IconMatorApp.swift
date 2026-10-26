@@ -15,9 +15,10 @@ struct IconMatorApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .containerBackground(.thinMaterial, for: .window)
         }
         .windowStyle(.hiddenTitleBar)
-        .defaultSize(width: 640, height: 720)
+        .defaultSize(width: 560, height: 620)
     }
 }
 
