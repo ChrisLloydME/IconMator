@@ -20,6 +20,7 @@ IconMator converts Apple Icon Composer `.icon` documents into static `.icns` fil
 ## Features
 
 - Drag and drop or choose `.icon` files, with automatic previews.
+- Choose **Default**, **Dark**, or **Mono** appearance for the preview, PNG, and ICNS.
 - Convert individual icons or batches with collision-safe filenames.
 - Export ten standard ICNS representations through 1024 × 1024, preserving transparency.
 - Optionally save the same 1024 × 1024 PNG used by the ICNS.
@@ -29,17 +30,17 @@ Conversion runs locally, without network access or third-party package dependenc
 
 ## Requirements and Status
 
-Conversion is currently enabled only on **macOS 27.0.1 (26A434) with Xcode 27.1 (27A9275)**. Other environments and Dark/Mono/OS-generation choices remain disabled until validated.
+Conversion is currently enabled only on **macOS 27.0.1 (26A434) with Xcode 27.1 (27A9275)**. Other environments and macOS-generation choices remain disabled until validated. Default, Dark, and Mono use verified Apple renditions; Dark and Mono require the Icon Composer renderer bundled with the selected Xcode.
 
 Rendering is numerically close to the supplied Finder reference, but is not pixel-identical. See the [validation report](Docs/Research/VALIDATION_REPORT.md) for measurements and remaining checks. The app targets macOS 26+, but that deployment target does not imply validated conversion on every supported OS.
 
 ## Usage
 
 1. Import `.icon` documents using the shared drop/preview area.
-2. Select an export folder and optionally enable **Include PNG**.
+2. Select an export folder, choose the **Default**, **Dark**, or **Mono** appearance, and optionally enable **Include PNG**.
 3. Choose **Convert to ICNS** or **Convert All**.
 
-Existing exports require confirmation before replacement. Closing the last main window quits the app.
+Existing exports require confirmation before replacement. Changing appearance clears the previous preview/export status so a Dark result is never presented as Mono. Closing the last main window quits the app.
 
 ## Build From Source
 
@@ -48,8 +49,8 @@ Open `IconMator.xcodeproj`, select the **IconMator** scheme, and build. Both Deb
 For the command-line converter:
 
 ```sh
-swift build --build-system native --scratch-path .build/native
-.build/native/debug/iconmator convert "AppIcon.icon" "AppIcon.icns" --png
+swift build --disable-sandbox --scratch-path .build/native
+.build/native/debug/iconmator convert "AppIcon.icon" "AppIcon.icns" --appearance dark --png
 ```
 
 See [Development](Docs/DEVELOPMENT.md) for app builds, tool discovery, signing, CLI commands, and automated tests. The repository does not provide notarized release packaging.
@@ -61,6 +62,7 @@ Start at [Docs/README.md](Docs/README.md).
 - [Development and CLI](Docs/DEVELOPMENT.md)
 - [Architecture](Docs/ARCHITECTURE.md)
 - [Rendering research](Docs/Research/RENDERING_RESEARCH.md)
+- [Appearance research](Docs/Research/APPEARANCE_RESEARCH.md)
 - [Validation report](Docs/Research/VALIDATION_REPORT.md)
 - [Third-party notices](Docs/THIRD_PARTY_NOTICES.md)
 

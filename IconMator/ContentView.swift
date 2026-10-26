@@ -1,4 +1,5 @@
 import AppKit
+import IconConversionCore
 import SwiftUI
 
 struct ContentView: View {
@@ -90,10 +91,10 @@ struct ContentView: View {
     }
 
     @ViewBuilder private func selectedPreview(_ job: ConversionJob) -> some View {
-        if let data = job.preview, let image = NSImage(data: data) {
+        if let data = job.preview, job.previewAppearance == model.appearance, let image = NSImage(data: data) {
             Image(nsImage: image).resizable().interpolation(.high).scaledToFit()
                 .frame(maxWidth: 280, maxHeight: 280)
-                .accessibilityLabel("Rendered preview of \(job.input.lastPathComponent)")
+                .accessibilityLabel("Rendered \(model.appearance.displayName) preview of \(job.input.lastPathComponent)")
         } else if model.isPreviewing {
             ProgressView("Rendering preview…").frame(maxWidth: .infinity, minHeight: 120)
         } else {
@@ -115,7 +116,7 @@ struct ContentView: View {
                     ForEach(model.jobs) { job in
                         Button { model.selection = job.id } label: {
                             VStack(spacing: 4) {
-                                if let data = job.preview, let image = NSImage(data: data) {
+                                if let data = job.preview, job.previewAppearance == model.appearance, let image = NSImage(data: data) {
                                     Image(nsImage: image).resizable().scaledToFit().frame(width: 40, height: 40)
                                 } else {
                                     Image(systemName: "app").font(.title).foregroundStyle(.secondary)
@@ -155,11 +156,25 @@ struct ContentView: View {
                 Spacer()
                 Button(model.destination == nil ? "Choose Folder…" : "Change…", action: model.chooseDestination)
             }
-            HStack {
+            HStack(spacing: 10) {
                 Toggle("Include PNG", isOn: $model.exportPNG)
                     .help("Export the same transparent 1024 × 1024 master used by the ICNS.")
                 Spacer()
-                Text("ICNS · macOS Default").font(.caption).foregroundStyle(.secondary)
+                Text("Appearance").font(.caption).foregroundStyle(.secondary)
+                Picker("Appearance", selection: $model.appearance) {
+                    ForEach(IconAppearance.allCases, id: \.rawValue) { appearance in
+                        Text(appearance.displayName).tag(appearance)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .frame(width: 190)
+                .help("Applies to the preview, PNG, and ICNS. Dark and Mono use Apple's Icon Composer renditions.")
+                .accessibilityLabel("Icon appearance")
+            }
+            if let issue = model.appearanceIssue {
+                Text(issue).font(.caption).foregroundStyle(.red)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .padding(.horizontal, 20).padding(.vertical, 16)
@@ -169,9 +184,9 @@ struct ContentView: View {
     private var bottomBar: some View {
         HStack(spacing: 12) {
             Button("Reveal in Finder") {
-                if let output = model.selectedJob?.output { model.reveal(output) }
+                if let output = model.revealTarget { model.reveal(output) }
             }
-            .disabled(model.selectedJob?.output == nil)
+            .disabled(model.revealTarget == nil)
             Button("Diagnostics…") { showDiagnostics = true }
 
             footerStatus
@@ -227,7 +242,13 @@ struct ContentView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     Text(model.toolStatus)
                     if let issue = model.toolIssue { Text(issue).foregroundStyle(.red) }
-                    Text("Experimental renderer: small differences from the Finder reference remain. Dark, Mono and other OS renderers are not yet validated.")
+                    if let capabilities = model.appearanceCapabilities {
+                        ForEach(capabilities.appearances, id: \.appearance.rawValue) { capability in
+                            Text("\(capability.appearance.displayName): \(capability.isSupported ? "available" : "unavailable") · \(capability.backend) · \(capability.rendition ?? "—")\(capability.reason.map { "\n\($0)" } ?? "")")
+                                .foregroundStyle(capability.isSupported ? Color.secondary : Color.red)
+                        }
+                    }
+                    Text("Default keeps the measured compiled-asset pipeline. Dark and Mono use verified Icon Composer renditions presented through the system icon canvas. No independent Finder reference is available for every Dark/Mono source, and interactive visual acceptance was not performed.")
                         .foregroundStyle(.secondary)
                     if let job = model.selectedJob {
                         if let error = job.error { Text(error) }

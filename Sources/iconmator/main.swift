@@ -2,6 +2,11 @@ import Foundation
 import IconConversionCore
 
 @main struct IconMatorCLI {
+    private struct ToolsReport: Codable {
+        let tools: DeveloperTools
+        let appearanceCapabilities: AppearanceCapabilities
+    }
+
     static func main() async {
         do {
             let args = Array(CommandLine.arguments.dropFirst())
@@ -14,27 +19,27 @@ import IconConversionCore
                 print(String(decoding: try encoder.encode(report), as: UTF8.self))
             } else if args == ["tools"] {
                 let tools = try await DeveloperToolLocator().locate()
-                print(String(decoding: try encoder.encode(tools), as: UTF8.self))
-            } else if args.count >= 3, args[0] == "convert" || args[0] == "package-png" {
-                let options = args[0] == "convert" ? ["--replace", "--png", "--diagnostics"] : ["--replace"]
-                guard args.dropFirst(3).allSatisfy({ options.contains($0) }) else {
-                    throw ConversionError.invalidInput("Unknown option.")
-                }
-                let input = URL(fileURLWithPath: args[1]), output = URL(fileURLWithPath: args[2])
+                let capabilities = await AppearanceCapabilities.probe(tools: tools)
+                print(String(decoding: try encoder.encode(ToolsReport(tools: tools, appearanceCapabilities: capabilities)), as: UTF8.self))
+            } else if args.first == "convert" {
+                let options = try CommandLineOptions.parseConvert(args)
                 let service = IconConversionService()
-                if args[0] == "package-png" {
-                    print(try await service.packagePNG(input: input, destination: output, overwrite: args.contains("--replace")).path)
-                } else {
-                    let tools = try await DeveloperToolLocator().locate()
-                    let result = try await service.convert(input: input, destination: output, tools: tools, exportPNG: args.contains("--png"), overwrite: args.contains("--replace")) { stage in
+                let tools = try await DeveloperToolLocator().locate()
+                let result = try await service.convert(input: URL(fileURLWithPath: options.input),
+                    destination: URL(fileURLWithPath: options.output), tools: tools,
+                    appearance: options.appearance, exportPNG: options.exportPNG, overwrite: options.overwrite) { stage in
                         FileHandle.standardError.write(Data((stage.rawValue + "\n").utf8))
                     }
-                    print(result.icns.path)
-                    print(result.environment)
-                    if args.contains("--diagnostics") { print(result.diagnostics) }
-                }
+                print(result.icns.path)
+                print(result.environment)
+                if options.diagnostics { print(result.diagnostics) }
+            } else if args.first == "package-png" {
+                let options = try CommandLineOptions.parsePackagePNG(args)
+                let service = IconConversionService()
+                print(try await service.packagePNG(input: URL(fileURLWithPath: options.input),
+                    destination: URL(fileURLWithPath: options.output), overwrite: options.overwrite).path)
             } else {
-                throw ConversionError.invalidInput("Usage: iconmator tools | inspect image.png | compare reference.png candidate.png directory | convert input.icon output.icns [--png] [--replace] [--diagnostics] | package-png input.png output.icns [--replace]")
+                throw ConversionError.invalidArguments(CommandLineOptions.usage)
             }
         } catch {
             FileHandle.standardError.write(Data((error.localizedDescription + "\n").utf8))

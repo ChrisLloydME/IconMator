@@ -13,6 +13,12 @@ installed tools and the SDK through xcrun rather than hardcoding an Xcode locati
 Finish Xcode's first-launch setup before conversion. Do not bundle Apple's
 internal tools with the application. No third-party packages are required.
 
+Default uses the compiled-asset backend. Dark and Mono additionally require the
+Icon Composer renderer bundled with the selected Xcode. Their verified renditions
+are `Dark` and `ClearLight`; Mono is the untinted light clear variant. A missing
+or unreadable Composer renderer disables only Dark and Mono, with an actionable
+capability reason; it never silently falls back to Default.
+
 ```sh
 xcode-select -p
 xcodebuild -version
@@ -38,6 +44,12 @@ xcodebuild -project IconMator.xcodeproj -scheme IconMator \
 Products are under `.research/AppDerived/Build/Products/Debug` and `Release`.
 These commands ad-hoc sign for local use; they do not produce notarized distribution.
 
+The 2026-10-26 agent harness additionally ran these commands with
+`HOME=$PWD/.research/home` and its outer sandbox relaxed, because Xcode's SwiftPM
+integration invokes a nested `sandbox-exec` that the harness denies. Those are
+harness constraints, not project requirements; the project commands themselves are
+unchanged.
+
 | Configuration | Bundle identifier |
 | --- | --- |
 | Debug | `com.lloydME.IconMator.beta` |
@@ -54,18 +66,24 @@ LICENSE and THIRD_PARTY_NOTICES.md are copied into the application resources.
 ## Command-Line Converter
 
 The commands below use the same native SwiftPM build system and scratch path as
-the recorded validation. Xcode 27 marks this build-system option deprecated; it
-remains documented here to reproduce those verified commands.
+the recorded validation. Xcode 27 marks `--build-system native` deprecated; the
+local 2026-10-26 harness also blocks SwiftPM's nested `sandbox-exec`, so the
+actual validated commands use `--disable-sandbox`. That flag changes only the
+manifest/build sandbox, not the compiled product.
 
 ```sh
-swift build --build-system native --scratch-path .build/native
+swift build --disable-sandbox --scratch-path .build/native
 .build/native/debug/iconmator tools
-.build/native/debug/iconmator convert "AppIcon.icon" "AppIcon.icns" --png
+.build/native/debug/iconmator convert "AppIcon.icon" "AppIcon.icns" --appearance dark --png
 ```
 
+`--appearance` accepts `default`, `dark`, or `mono` and defaults to `default`.
 `--png` exports the same rendered 1024 master. Existing destinations are refused
-unless `--replace` is explicitly supplied. `--diagnostics` prints tool output and
-actual source dimensions for each requested representation.
+unless `--replace` is explicitly supplied. `--diagnostics` prints tool output,
+the rendition/backend, actual source dimensions and final geometry. `tools` prints
+the discovered tools plus an `appearanceCapabilities` object containing the
+Composer path/version and each appearance's supported state, backend, rendition
+and unavailable reason. `package-png` does not accept `--appearance`.
 
 Development-only image and reference commands:
 
@@ -84,23 +102,29 @@ normalizes a separate working representation to 8-bit premultiplied sRGB.
 Non-GUI unit and presentation-model tests:
 
 ```sh
-swift test --build-system native --scratch-path .build/native
+swift test --disable-sandbox --scratch-path .build/native
 ```
 
 Real Apple-tool integration tests:
 
 ```sh
-ICONMATOR_INTEGRATION=1 swift test --build-system native --scratch-path .build/native
+ICONMATOR_INTEGRATION=1 swift test --disable-sandbox --scratch-path .build/native
 ```
 
 The integration suite needs authorized local fixtures at
 `ReferenceInputs/Metadatics/Metadatics.icon` and `ReferenceInputs/Metadatics/Metadatics.png`.
-They are intentionally excluded from Git. Integration tests are explicitly skipped
-by default; enabling them never substitutes mocked rendering output.
+They are intentionally excluded from Git. It also uses the repository's
+`IconMator/AppIcon.icon` and a synthetic layered icon created in its temporary
+workspace. Integration tests are explicitly skipped by default; enabling them
+never substitutes mocked rendering output. The appearance matrix converts all
+three sources with Default, Dark and Mono, decodes every ICNS independently and
+checks input-byte preservation.
 
 The GUI has not been launched for verification. UI checks use source review,
-presentation-model tests and builds. Finder custom-icon display and multi-scale
-visual acceptance remain separate, unperformed checks. See the
+presentation-model tests and builds. Appearance selection, preview invalidation,
+late-result rejection and batch appearance capture are covered without launching
+the app. Finder custom-icon display and interactive visual acceptance remain
+separate, unperformed checks. See the
 [validation report](Research/VALIDATION_REPORT.md) for the exact evidence.
 
 ## Repository Layout

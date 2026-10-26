@@ -1,16 +1,26 @@
-import AppKit
-import CoreGraphics
 import Foundation
-import UniformTypeIdentifiers
 
 public struct RenderedIcon: Sendable {
     public let iconset: URL
     public let masterPNG: URL
     public let diagnostics: String
+    public let appearance: IconAppearance
+    public let rendition: String
+    public let backend: String
+
+    public init(iconset: URL, masterPNG: URL, diagnostics: String, appearance: IconAppearance,
+                rendition: String, backend: String) {
+        self.iconset = iconset
+        self.masterPNG = masterPNG
+        self.diagnostics = diagnostics
+        self.appearance = appearance
+        self.rendition = rendition
+        self.backend = backend
+    }
 }
 
 public protocol IconRenderingBackend: Sendable {
-    func render(input: URL, workspace: URL, tools: DeveloperTools) async throws -> RenderedIcon
+    func render(input: URL, appearance: IconAppearance, workspace: URL, tools: DeveloperTools) async throws -> RenderedIcon
 }
 
 /// Compiles genuine Apple assets, then asks IconServices for their current Default rendering.
@@ -19,7 +29,10 @@ public struct CompiledAssetBackend: IconRenderingBackend {
     private let runner: any ProcessRunning
     public init(runner: any ProcessRunning = ProcessRunner()) { self.runner = runner }
 
-    public func render(input: URL, workspace: URL, tools: DeveloperTools) async throws -> RenderedIcon {
+    public func render(input: URL, appearance: IconAppearance, workspace: URL, tools: DeveloperTools) async throws -> RenderedIcon {
+        guard appearance == .default else {
+            throw ConversionError.validation("The compiled-asset backend only renders the Default appearance.")
+        }
         try tools.requireResearchedEnvironment()
         let fm = FileManager.default
         let snapshot = workspace.appendingPathComponent("AppIcon.icon")
@@ -57,67 +70,11 @@ public struct CompiledAssetBackend: IconRenderingBackend {
         try Task.checkCancellation()
         let iconset = workspace.appendingPathComponent("Rendered.iconset")
         try fm.createDirectory(at: iconset, withIntermediateDirectories: false)
-        let extractionDiagnostics = try await Self.extract(bundle: bundle, to: iconset)
+        let extractionDiagnostics = try await SystemIconExtractor.extract(bundle: bundle, to: iconset)
         try ConversionValidator().validateIconset(iconset)
         return RenderedIcon(iconset: iconset, masterPNG: iconset.appendingPathComponent("icon_512x512@2x.png"),
-            diagnostics: compilation.output + compilationOfStub.output + extractionDiagnostics)
-    }
-
-    @MainActor private static func extract(bundle: URL, to iconset: URL) throws -> String {
-        var diagnostics = ""
-        var extractionError: Error?
-        guard let appearance = NSAppearance(named: .aqua) else { throw ConversionError.validation("Default appearance is unavailable.") }
-        appearance.performAsCurrentDrawingAppearance {
-            do {
-                let icon = NSWorkspace.shared.icon(forFile: bundle.path)
-                var rendered: [Int: URL] = [:]
-                for rep in IconRepresentation.standard.sorted(by: { $0.pixels > $1.pixels }) {
-                    try Task.checkCancellation()
-                    let output = iconset.appendingPathComponent(rep.name)
-                    if let duplicate = rendered[rep.pixels] {
-                        try FileManager.default.copyItem(at: duplicate, to: output)
-                        continue
-                    }
-                    var rect = CGRect(x: 0, y: 0, width: rep.pixels, height: rep.pixels)
-                    guard let source = icon.cgImage(forProposedRect: &rect, context: nil, hints: [.interpolation: NSImageInterpolation.high]),
-                          source.width >= rep.pixels, source.height >= rep.pixels,
-                          source.width == source.height else {
-                        throw ConversionError.validation("System renderer returned no genuine \(rep.pixels)×\(rep.pixels) image. No upscaling is allowed.")
-                    }
-                    guard let context = CGContext(data: nil, width: rep.pixels, height: rep.pixels, bitsPerComponent: 8,
-                        bytesPerRow: rep.pixels * 4, space: CGColorSpace(name: CGColorSpace.sRGB)!,
-                        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Big.rawValue) else {
-                        throw ConversionError.invalidImage("Cannot allocate rendering context.")
-                    }
-                    diagnostics += "System request \(rep.pixels)px: source \(source.width)×\(source.height), \(source.bitsPerComponent) bits/component\n"
-                    context.interpolationQuality = .high
-                    let target = CGRect(x: 0, y: 0, width: rep.pixels, height: rep.pixels)
-                    if source.shouldToneMap {
-                        guard context.draw(source, in: target, by: .none, options: nil) else { throw ConversionError.invalidImage("Cannot export extended-range system icon.") }
-                    } else { context.draw(source, in: target) }
-                    guard let result = context.makeImage() else { throw ConversionError.invalidImage("System icon export failed.") }
-                    if rep.pixels == 1024 {
-                        let generic = NSWorkspace.shared.icon(for: .applicationBundle)
-                        var genericRect = CGRect(x: 0, y: 0, width: 1024, height: 1024)
-                        guard let genericSource = generic.cgImage(forProposedRect: &genericRect, context: nil, hints: nil),
-                              let genericContext = CGContext(data: nil, width: 1024, height: 1024, bitsPerComponent: 8, bytesPerRow: 4096,
-                                space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Big.rawValue) else {
-                            throw ConversionError.validation("Cannot validate the system icon against its generic fallback.")
-                        }
-                        if genericSource.shouldToneMap { _ = genericContext.draw(genericSource, in: genericRect, by: .none, options: nil) }
-                        else { genericContext.draw(genericSource, in: genericRect) }
-                        if let genericImage = genericContext.makeImage(),
-                           let genericData = genericImage.dataProvider?.data, let resultData = result.dataProvider?.data,
-                           genericData as Data == resultData as Data {
-                            throw ConversionError.validation("IconServices returned a generic application icon instead of the compiled artwork. No fallback was exported.")
-                        }
-                    }
-                    try ICNSBuilder.write(result, to: output)
-                    rendered[rep.pixels] = output
-                }
-            } catch { extractionError = error }
-        }
-        if let extractionError { throw extractionError }
-        return diagnostics
+            diagnostics: compilation.output + compilationOfStub.output + extractionDiagnostics,
+            appearance: .default, rendition: ComposerRendition.default.rawValue,
+            backend: "Compiled icon assets + system icon presentation")
     }
 }

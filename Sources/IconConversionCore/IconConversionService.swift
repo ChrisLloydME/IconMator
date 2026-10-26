@@ -14,12 +14,36 @@ public struct ConversionResult: Sendable {
     public let environment: String
     public let diagnostics: String
     public let previewPNG: Data
+    public let appearance: IconAppearance
+    public let rendition: String
+    public let backend: String
+
+    public init(icns: URL, png: URL?, environment: String, diagnostics: String, previewPNG: Data,
+                appearance: IconAppearance, rendition: String, backend: String) {
+        self.icns = icns
+        self.png = png
+        self.environment = environment
+        self.diagnostics = diagnostics
+        self.previewPNG = previewPNG
+        self.appearance = appearance
+        self.rendition = rendition
+        self.backend = backend
+    }
 }
 
-public struct IconConversionService: Sendable {
+/// Lets the presentation layer be tested with a recording converter instead of
+/// real Apple tools while keeping the production service as the default.
+public protocol IconConversionPerforming: Sendable {
+    func convert(input: URL, destination: URL, tools: DeveloperTools, appearance: IconAppearance,
+                 exportPNG: Bool, overwrite: Bool,
+                 progress: @escaping @Sendable (ConversionStage) async -> Void) async throws -> ConversionResult
+    func preview(input: URL, appearance: IconAppearance, tools: DeveloperTools) async throws -> Data
+}
+
+public struct IconConversionService: IconConversionPerforming, Sendable {
     private let backend: any IconRenderingBackend
     private let runner: any ProcessRunning
-    public init(backend: any IconRenderingBackend = CompiledAssetBackend(), runner: any ProcessRunning = ProcessRunner()) {
+    public init(backend: any IconRenderingBackend = IconRenderingRouter(), runner: any ProcessRunning = ProcessRunner()) {
         self.backend = backend; self.runner = runner
     }
 
@@ -40,8 +64,9 @@ public struct IconConversionService: Sendable {
         }
     }
 
-    public func convert(input: URL, destination: URL, tools: DeveloperTools, exportPNG: Bool = false,
-                        overwrite: Bool = false, progress: @escaping @Sendable (ConversionStage) async -> Void = { _ in }) async throws -> ConversionResult {
+    public func convert(input: URL, destination: URL, tools: DeveloperTools, appearance: IconAppearance = .default,
+                        exportPNG: Bool = false, overwrite: Bool = false,
+                        progress: @escaping @Sendable (ConversionStage) async -> Void = { _ in }) async throws -> ConversionResult {
         try Task.checkCancellation()
         await progress(.checking)
         try Self.validateInput(input)
@@ -55,6 +80,11 @@ public struct IconConversionService: Sendable {
               current.operatingSystem == tools.operatingSystem else {
             throw ConversionError.unsupportedTool("The selected Xcode or operating system changed. Recheck developer tools before converting.")
         }
+        if appearance != .default {
+            guard current.composerTool == tools.composerTool, current.composerTool != nil else {
+                throw ConversionError.missingTool("The selected Icon Composer renderer changed. Recheck developer tools before converting Dark or Mono.")
+            }
+        }
         try tools.requireResearchedEnvironment()
         let outputs = [destination] + (exportPNG ? [destination.deletingPathExtension().appendingPathExtension("png")] : [])
         if !overwrite, let existing = outputs.first(where: { FileManager.default.fileExists(atPath: $0.path) }) {
@@ -63,7 +93,7 @@ public struct IconConversionService: Sendable {
         let workspace = try TemporaryWorkspace()
         defer { workspace.cleanUp() }
         await progress(.rendering)
-        let rendered = try await backend.render(input: input, workspace: workspace.url, tools: tools)
+        let rendered = try await backend.render(input: input, appearance: appearance, workspace: workspace.url, tools: tools)
         try Task.checkCancellation()
         await progress(.packaging)
         let icns = try await ICNSBuilder(runner: runner).package(iconset: rendered.iconset, workspace: workspace.url, tool: tools.iconutil)
@@ -71,12 +101,14 @@ public struct IconConversionService: Sendable {
         await progress(.exporting)
         let previewPNG = try Data(contentsOf: rendered.masterPNG)
         try OutputPublisher.publish(files: [(icns, destination)] + (exportPNG ? [(rendered.masterPNG, outputs[1])] : []), overwrite: overwrite)
+        let diagnostics = rendered.diagnostics + "Packaging: independent iconutil decode and exact normalized pixel comparison passed for all ten representations\n"
         return ConversionResult(icns: destination, png: exportPNG ? outputs[1] : nil,
-            environment: "macOS \(tools.operatingSystem); \(tools.xcodeVersion.trimmingCharacters(in: .whitespacesAndNewlines)); Default (current system renderer)",
-            diagnostics: rendered.diagnostics, previewPNG: previewPNG)
+            environment: "macOS \(tools.operatingSystem); \(tools.xcodeVersion.trimmingCharacters(in: .whitespacesAndNewlines)); Appearance: \(appearance.displayName); Rendition: \(rendered.rendition); \(rendered.backend)",
+            diagnostics: diagnostics, previewPNG: previewPNG,
+            appearance: appearance, rendition: rendered.rendition, backend: rendered.backend)
     }
 
-    public func preview(input: URL, tools: DeveloperTools) async throws -> Data {
+    public func preview(input: URL, appearance: IconAppearance = .default, tools: DeveloperTools) async throws -> Data {
         try Task.checkCancellation()
         try Self.validateInput(input)
         try tools.validatePinnedTools()
@@ -85,10 +117,15 @@ public struct IconConversionService: Sendable {
               current.operatingSystem == tools.operatingSystem else {
             throw ConversionError.unsupportedTool("The selected developer tools changed. Recheck developer tools.")
         }
+        if appearance != .default {
+            guard current.composerTool == tools.composerTool, current.composerTool != nil else {
+                throw ConversionError.missingTool("The selected Icon Composer renderer changed. Recheck developer tools before previewing Dark or Mono.")
+            }
+        }
         try tools.requireResearchedEnvironment()
         let workspace = try TemporaryWorkspace()
         defer { workspace.cleanUp() }
-        let rendered = try await backend.render(input: input, workspace: workspace.url, tools: tools)
+        let rendered = try await backend.render(input: input, appearance: appearance, workspace: workspace.url, tools: tools)
         try Task.checkCancellation()
         return try Data(contentsOf: rendered.masterPNG)
     }

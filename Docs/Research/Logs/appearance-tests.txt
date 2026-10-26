@@ -1,0 +1,121 @@
+warning: /Users/lloyd/Library/org.swift.swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /Users/lloyd/Library/org.swift.swiftpm/security is not accessible or not writable, disabling user-level cache features.
+warning: /Users/lloyd/Library/Caches/org.swift.swiftpm is not accessible or not writable, disabling user-level cache features.
+warning: 'iconmator': failed storing manifest for 'iconmator' in cache: attempt to write a readonly database
+Building for debugging...
+[1 / 20]
+[3 / 11] IconConversionCoreTests-product
+[9 / 15] IconMatorPresentationTests-product
+[11 / 20] IconConversionCoreTests-product
+[14 / 20] IconMatorPresentationTests-product
+[15 / 19] IconConversionCoreTests-product
+[17 / 19] IconConversionCoreTests-product
+Build complete! (1.91 sec)
+Test Suite 'All tests' started at 2026-10-26 12:34:13.158.
+Test Suite 'All tests' passed at 2026-10-26 12:34:13.160.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'All tests' started at 2026-10-26 12:34:13.281.
+Test Suite 'All tests' passed at 2026-10-26 12:34:13.282.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite ImportWorkflowTests started.
+􀟈  Suite AppearancePresentationTests started.
+􀟈  Test duplicateImportSelectsExistingJobWithoutAddingAnother() started.
+􀟈  Suite PresentationTests started.
+􀟈  Test pickerRejectsMalformedIconDirectories() started.
+􀟈  Test missingComposerDisablesOnlyDarkAndMono() started.
+􀟈  Test newImportIsSelectedAndAutomaticallyRequestsItsPreview() started.
+􀟈  Test conversionUsesCapturedAppearanceAndAppearanceChangeClearsOutput() started.
+􀟈  Test batchNamesDoNotCollideOnCaseInsensitiveVolumes() started.
+􀟈  Test rapidAppearanceSwitchingKeepsOnlyTheLatestResult() started.
+􀟈  Test importingDeduplicatesAndRemovalKeepsSelectionValid() started.
+􀟈  Test pickerAcceptsDirectoryDocumentsAndKeepsFoldersNavigable() started.
+􀟈  Test invalidImportsHaveUnderstandableErrors() started.
+􀟈  Test lateDefaultPreviewCannotReplaceDarkPreview() started.
+􀟈  Test sandboxedBuildDoesNotStartToolExecution() started.
+􁁛  Test missingComposerDisablesOnlyDarkAndMono() passed after 0.003 seconds.
+􁁛  Test duplicateImportSelectsExistingJobWithoutAddingAnother() passed after 0.007 seconds.
+􁁛  Test batchNamesDoNotCollideOnCaseInsensitiveVolumes() passed after 0.011 seconds.
+􁁛  Test pickerRejectsMalformedIconDirectories() passed after 0.011 seconds.
+􁁛  Test invalidImportsHaveUnderstandableErrors() passed after 0.011 seconds.
+􁁛  Test importingDeduplicatesAndRemovalKeepsSelectionValid() passed after 0.011 seconds.
+􁁛  Test pickerAcceptsDirectoryDocumentsAndKeepsFoldersNavigable() passed after 0.011 seconds.
+􁁛  Test sandboxedBuildDoesNotStartToolExecution() passed after 0.011 seconds.
+􁁛  Suite PresentationTests passed after 0.011 seconds.
+􁁛  Test newImportIsSelectedAndAutomaticallyRequestsItsPreview() passed after 0.012 seconds.
+􁁛  Suite ImportWorkflowTests passed after 0.012 seconds.
+􁁛  Test conversionUsesCapturedAppearanceAndAppearanceChangeClearsOutput() passed after 0.012 seconds.
+􁁛  Test lateDefaultPreviewCannotReplaceDarkPreview() passed after 0.013 seconds.
+􁁛  Test rapidAppearanceSwitchingKeepsOnlyTheLatestResult() passed after 0.013 seconds.
+􁁛  Suite AppearancePresentationTests passed after 0.013 seconds.
+􁁛  Test run with 12 tests in 3 suites passed after 0.013 seconds.
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite AppleIntegrationTests started.
+􀟈  Suite EngineTests started.
+􀟈  Suite ToolDiscoveryTests started.
+􀟈  Suite ImageAnalysisTests started.
+􀟈  Test installedToolsAndReferenceRoundTrip() started.
+􀟈  Test appearanceMatrixPreservesCanvasPackagingAndInputs() started.
+􀟈  Test processTimeoutTerminatesTool() started.
+􀟈  Suite AppearanceTests started.
+􀟈  Test temporaryWorkspacesAreIsolatedAndCleaned() started.
+􀟈  Test realRenderingBatchCancellationAndInputPreservation() started.
+􀟈  Test processArgumentsAreNotInterpretedByShell() started.
+􀟈  Test invalidInputAndSymlinksAreRejected() started.
+􀟈  Test atomicPublisherRefusesCollisionAndSupportsApprovedReplacement() started.
+􀟈  Test unsupportedOrMissingToolchainFailsClearly() started.
+􀟈  Test processCanBeCancelled() started.
+􀟈  Test commandLineToolsDirectoryIsNotAcceptedAsFullXcode() started.
+􀟈  Test doesNotHideCanvasChangesByCropping() started.
+􀟈  Test fullCanvasAlphaAndGeometry() started.
+􀟈  Test detectsAlphaDifferences() started.
+􀟈  Test smallMasterIsNeverUpscaled() started.
+􀟈  Test publisherPreparesAllOutputsBeforeChangingAny() started.
+􀟈  Test discoversRelocatedXcodeAndHonorsAppOverride(useOverride:) started.
+􀟈  Test processDiagnosticsAndFailureArePropagated() started.
+􀟈  Test routerSelectsTheIntendedBackendAndNeverFallsBack() started.
+􀟈  Test omittedAppearancePreservesDefault() started.
+􀟈  Test missingComposerVersionIsReportedWithoutDisablingDefault() started.
+􀟈  Test packagePNGDoesNotAcceptAppearance() started.
+􀟈  Test appearancesUseTheVerifiedRenditions() started.
+􀟈  Test composerBackendRequiresAVerifiableTool() started.
+􀟈  Test cliParsesAppearancesAndPreservesExistingFlags() started.
+􀟈  Test cliRejectsMalformedAppearanceArguments() started.
+􀟈  Test case passing 1 argument useOverride → false to discoversRelocatedXcodeAndHonorsAppOverride(useOverride:) started.
+􀟈  Test case passing 1 argument useOverride → true to discoversRelocatedXcodeAndHonorsAppOverride(useOverride:) started.
+􁁛  Test unsupportedOrMissingToolchainFailsClearly() passed after 0.005 seconds.
+􁁛  Test commandLineToolsDirectoryIsNotAcceptedAsFullXcode() passed after 0.010 seconds.
+􁁛  Test temporaryWorkspacesAreIsolatedAndCleaned() passed after 0.010 seconds.
+􁁛  Test invalidInputAndSymlinksAreRejected() passed after 0.010 seconds.
+􁁛  Test atomicPublisherRefusesCollisionAndSupportsApprovedReplacement() passed after 0.010 seconds.
+􁁛  Test routerSelectsTheIntendedBackendAndNeverFallsBack() passed after 0.009 seconds.
+􁁛  Test omittedAppearancePreservesDefault() passed after 0.009 seconds.
+􁁛  Test missingComposerVersionIsReportedWithoutDisablingDefault() passed after 0.009 seconds.
+􁁛  Test packagePNGDoesNotAcceptAppearance() passed after 0.009 seconds.
+􁁛  Test appearancesUseTheVerifiedRenditions() passed after 0.009 seconds.
+􁁛  Test publisherPreparesAllOutputsBeforeChangingAny() passed after 0.010 seconds.
+􁁛  Test cliParsesAppearancesAndPreservesExistingFlags() passed after 0.009 seconds.
+􁁛  Test composerBackendRequiresAVerifiableTool() passed after 0.009 seconds.
+􁁛  Test cliRejectsMalformedAppearanceArguments() passed after 0.009 seconds.
+􁁛  Suite AppearanceTests passed after 0.011 seconds.
+􁁛  Test discoversRelocatedXcodeAndHonorsAppOverride(useOverride:) with 2 test cases passed after 0.014 seconds.
+􁁛  Test processDiagnosticsAndFailureArePropagated() passed after 0.014 seconds.
+􁁛  Suite ToolDiscoveryTests passed after 0.014 seconds.
+􁁛  Test doesNotHideCanvasChangesByCropping() passed after 0.014 seconds.
+􁁛  Test smallMasterIsNeverUpscaled() passed after 0.015 seconds.
+􁁛  Test processArgumentsAreNotInterpretedByShell() passed after 0.015 seconds.
+􁁛  Test detectsAlphaDifferences() passed after 0.017 seconds.
+􁁛  Test fullCanvasAlphaAndGeometry() passed after 0.017 seconds.
+􁁛  Suite ImageAnalysisTests passed after 0.018 seconds.
+􁁛  Test processTimeoutTerminatesTool() passed after 0.063 seconds.
+􁁛  Test processCanBeCancelled() passed after 0.103 seconds.
+􁁛  Suite EngineTests passed after 0.103 seconds.
+􁁛  Test installedToolsAndReferenceRoundTrip() passed after 6.773 seconds.
+􁁛  Test realRenderingBatchCancellationAndInputPreservation() passed after 14.673 seconds.
+􁁛  Test appearanceMatrixPreservesCanvasPackagingAndInputs() passed after 88.977 seconds.
+􁁛  Suite AppleIntegrationTests passed after 88.977 seconds.
+􁁛  Test run with 26 tests in 5 suites passed after 88.977 seconds.

@@ -17,6 +17,12 @@ public struct DeveloperTools: Codable, Sendable {
         return environment
     }
 
+    /// Stable identity for preview caching and stale-result checks. A tool change
+    /// invalidates previews rather than allowing an old image to be shown.
+    public var identity: String {
+        "\(developerDirectory.path)|\(xcodeVersion)|\(operatingSystem)|\(composerTool?.path ?? "no-composer")"
+    }
+
     public func validatePinnedTools() throws {
         for url in [developerDirectory, xcodebuild, actool, clang, sdk, iconutil] {
             guard FileManager.default.fileExists(atPath: url.path) else {

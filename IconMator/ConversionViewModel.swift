@@ -7,7 +7,10 @@ struct ConversionJob: Identifiable {
     let input: URL
     var status = "Ready"
     var output: URL?
+    var outputAppearance: IconAppearance?
     var preview: Data?
+    var previewAppearance: IconAppearance?
+    var previewToolIdentity: String?
     var error: String?
     var diagnostics = ""
 }
@@ -22,7 +25,15 @@ final class ConversionViewModel {
     }
     var destination: URL?
     var exportPNG = false
+    var appearance: IconAppearance = .default {
+        didSet {
+            guard appearance != oldValue, !isConverting else { return }
+            invalidatePreviewsAndOutputs()
+            renderSelectedPreview()
+        }
+    }
     var tools: DeveloperTools?
+    var appearanceCapabilities: AppearanceCapabilities?
     var toolStatus = "Checking developer tools…"
     var toolIssue: String?
     var message: String?
@@ -36,13 +47,15 @@ final class ConversionViewModel {
     @ObservationIgnored private var toolTask: Task<Void, Never>?
     @ObservationIgnored private var previewGeneration = UUID()
     @ObservationIgnored private let externalToolsPermitted: Bool
-    @ObservationIgnored private let service = IconConversionService()
-    @ObservationIgnored private let previewRenderer: @Sendable (URL, DeveloperTools) async throws -> Data
+    @ObservationIgnored private let converter: any IconConversionPerforming
+    @ObservationIgnored private let previewRenderer: @Sendable (URL, IconAppearance, DeveloperTools) async throws -> Data
 
     init(externalToolsPermitted: Bool? = nil,
-         previewRenderer: @escaping @Sendable (URL, DeveloperTools) async throws -> Data = { input, tools in
-             try await IconConversionService().preview(input: input, tools: tools)
+         converter: any IconConversionPerforming = IconConversionService(),
+         previewRenderer: @escaping @Sendable (URL, IconAppearance, DeveloperTools) async throws -> Data = { input, appearance, tools in
+             try await IconConversionService().preview(input: input, appearance: appearance, tools: tools)
          }) {
+        self.converter = converter
         self.previewRenderer = previewRenderer
         #if ICONMATOR_APP_SANDBOX_YES
         self.externalToolsPermitted = externalToolsPermitted ?? false
@@ -52,7 +65,25 @@ final class ConversionViewModel {
     }
 
     var selectedJob: ConversionJob? { jobs.first { $0.id == selection } }
-    var canConvert: Bool { tools != nil && toolIssue == nil && !isConverting && !isCheckingTools && !jobs.isEmpty && destination != nil }
+    var canConvert: Bool {
+        tools != nil && toolIssue == nil && !isConverting && !isCheckingTools &&
+        !jobs.isEmpty && destination != nil && appearanceIssue == nil
+    }
+    var revealTarget: URL? {
+        guard let job = selectedJob, job.outputAppearance == appearance else { return nil }
+        return job.output
+    }
+    var appearanceIssue: String? {
+        guard appearance != .default else { return nil }
+        if let capability = appearanceCapabilities?.capability(for: appearance) {
+            return capability.isSupported ? nil : (capability.reason ?? "This appearance is unavailable.")
+        }
+        guard tools != nil else { return "Developer tools are not ready." }
+        guard tools?.composerTool != nil else {
+            return "Dark and Mono require the Icon Composer renderer bundled with the selected Xcode."
+        }
+        return nil
+    }
 
     func refreshTools() {
         guard !isConverting, !isCheckingTools else { return }
@@ -61,16 +92,28 @@ final class ConversionViewModel {
             toolStatus = "External rendering unavailable in this build"
             return
         }
-        isCheckingTools = true; toolIssue = nil; tools = nil
-        previewTask?.cancel()
+        isCheckingTools = true; toolIssue = nil; tools = nil; appearanceCapabilities = nil
+        invalidatePreviewsAndOutputs()
         toolTask = Task {
             defer { isCheckingTools = false }
             do {
                 let found = try await DeveloperToolLocator().locate()
+                try Task.checkCancellation()
                 try found.requireResearchedEnvironment()
+                let capabilities = await AppearanceCapabilities.probe(tools: found)
+                try Task.checkCancellation()
                 tools = found
-                toolStatus = "macOS \(found.operatingSystem) · \(found.xcodeVersion.components(separatedBy: .newlines).first ?? "Xcode")"
+                appearanceCapabilities = capabilities
+                var status = "macOS \(found.operatingSystem) · \(found.xcodeVersion.components(separatedBy: .newlines).first ?? "Xcode")"
+                if let composer = capabilities.composerTool {
+                    status += " · Icon Composer \(composer.displayVersion)"
+                } else if found.composerTool != nil {
+                    status += " · Icon Composer version unreadable"
+                }
+                toolStatus = status
                 renderSelectedPreview()
+            } catch is CancellationError {
+                // A newer refresh or window teardown owns the tool state now.
             } catch {
                 toolIssue = error.localizedDescription
                 toolStatus = "Conversion unavailable"
@@ -120,25 +163,49 @@ final class ConversionViewModel {
     func removeSelected() {
         guard !isConverting else { return }
         previewTask?.cancel()
+        previewGeneration = UUID()
+        isPreviewing = false
         jobs.removeAll { $0.id == selection }
         selection = jobs.first?.id
     }
 
     func renderSelectedPreview() {
         previewTask?.cancel(); previewGeneration = UUID(); isPreviewing = false
-        guard !isConverting, let tools, toolIssue == nil, let job = selectedJob, job.preview == nil else { return }
-        let id = job.id, generation = previewGeneration
+        guard !isConverting, let tools, toolIssue == nil, let job = selectedJob else { return }
+        if let issue = appearanceIssue {
+            if let index = jobs.firstIndex(where: { $0.id == job.id }) {
+                jobs[index].preview = nil
+                jobs[index].previewAppearance = nil
+                jobs[index].previewToolIdentity = nil
+                jobs[index].error = "Preview: \(issue)"
+            }
+            return
+        }
+        let identity = tools.identity
+        if job.preview != nil, job.previewAppearance == appearance, job.previewToolIdentity == identity { return }
+        let id = job.id, generation = previewGeneration, capturedAppearance = appearance
         isPreviewing = true
         previewTask = Task {
             do {
-                let data = try await previewRenderer(job.input, tools)
+                let data = try await previewRenderer(job.input, capturedAppearance, tools)
                 try Task.checkCancellation()
-                if let index = jobs.firstIndex(where: { $0.id == id }) { jobs[index].preview = data; jobs[index].error = nil }
+                guard previewGeneration == generation,
+                      self.appearance == capturedAppearance,
+                      self.tools?.identity == identity,
+                      let index = jobs.firstIndex(where: { $0.id == id }) else { return }
+                jobs[index].preview = data
+                jobs[index].previewAppearance = capturedAppearance
+                jobs[index].previewToolIdentity = identity
+                jobs[index].error = nil
             } catch is CancellationError {
-                // Selection changes cancel this preview only.
+                // A newer selection, appearance, or tool refresh owns the preview now.
             } catch {
-                guard !Task.isCancelled, previewGeneration == generation else { return }
+                guard !Task.isCancelled, previewGeneration == generation,
+                      self.appearance == capturedAppearance else { return }
                 if let index = jobs.firstIndex(where: { $0.id == id }) {
+                    jobs[index].preview = nil
+                    jobs[index].previewAppearance = nil
+                    jobs[index].previewToolIdentity = nil
                     jobs[index].error = "Preview: \(error.localizedDescription)"
                     jobs[index].diagnostics = (error as? ConversionError)?.diagnostic ?? ""
                 }
@@ -149,6 +216,7 @@ final class ConversionViewModel {
 
     func startConversion() {
         guard canConvert, let tools, let destination else { return }
+        let batchAppearance = appearance
         let plan = BatchPlanner.plan(inputs: jobs.map(\.input), folder: destination)
         let existing = plan.flatMap { item in
             [item.output] + (exportPNG ? [item.output.deletingPathExtension().appendingPathExtension("png")] : [])
@@ -163,22 +231,27 @@ final class ConversionViewModel {
             guard alert.runModal() == .alertSecondButtonReturn else { return }
             replace = true
         }
-        previewTask?.cancel(); isPreviewing = false; isConverting = true; completed = 0; message = nil
+        previewTask?.cancel(); previewGeneration = UUID(); isPreviewing = false
+        isConverting = true; completed = 0; message = nil
         let savePNG = exportPNG
         conversionTask = Task {
             defer { isConverting = false; currentStage = ""; conversionTask = nil }
             for item in plan {
-                if Task.isCancelled { break }
+                if Task.isCancelled || self.appearance != batchAppearance { break }
                 guard let index = jobs.firstIndex(where: { $0.input == item.input }) else { continue }
                 let id = jobs[index].id
-                jobs[index].error = nil; jobs[index].output = nil
+                jobs[index].error = nil; jobs[index].output = nil; jobs[index].outputAppearance = nil
                 do {
-                    let result = try await service.convert(input: item.input, destination: item.output, tools: tools,
-                        exportPNG: savePNG, overwrite: replace) { stage in
+                    let result = try await converter.convert(input: item.input, destination: item.output, tools: tools,
+                        appearance: batchAppearance, exportPNG: savePNG, overwrite: replace) { stage in
                         await self.updateProgress(id: id, stage: stage)
                     }
+                    guard !Task.isCancelled, self.appearance == batchAppearance else { break }
                     jobs[index].output = result.icns
+                    jobs[index].outputAppearance = result.appearance
                     jobs[index].preview = result.previewPNG
+                    jobs[index].previewAppearance = result.appearance
+                    jobs[index].previewToolIdentity = tools.identity
                     jobs[index].diagnostics = result.environment + "\n" + result.diagnostics
                     jobs[index].status = "Exported and verified"
                 } catch is CancellationError {
@@ -197,7 +270,29 @@ final class ConversionViewModel {
         if let index = jobs.firstIndex(where: { $0.id == id }) { jobs[index].status = stage.rawValue }
     }
 
-    func stopAllTasks() { conversionTask?.cancel(); previewTask?.cancel(); toolTask?.cancel() }
+    /// Clears anything that was rendered for the previous appearance or tool
+    /// identity. A late result must not be shown as if it belonged to the new
+    /// selection.
+    private func invalidatePreviewsAndOutputs() {
+        previewTask?.cancel()
+        previewGeneration = UUID()
+        isPreviewing = false
+        for index in jobs.indices {
+            jobs[index].preview = nil
+            jobs[index].previewAppearance = nil
+            jobs[index].previewToolIdentity = nil
+            jobs[index].output = nil
+            jobs[index].outputAppearance = nil
+            jobs[index].diagnostics = ""
+            jobs[index].error = nil
+            jobs[index].status = "Ready"
+        }
+    }
+
+    func stopAllTasks() {
+        conversionTask?.cancel(); previewTask?.cancel(); toolTask?.cancel()
+        previewGeneration = UUID()
+    }
     func cancel() { conversionTask?.cancel() }
     func reveal(_ url: URL) { NSWorkspace.shared.activateFileViewerSelecting([url]) }
 }

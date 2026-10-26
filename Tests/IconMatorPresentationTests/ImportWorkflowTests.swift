@@ -38,7 +38,7 @@ private actor PreviewRequests {
         let second = try makeIcon("Second.icon", in: workspace.url)
         let requests = PreviewRequests()
         // Only the presentation trigger is mocked. Rendering remains covered by real-tool integration tests.
-        let model = ConversionViewModel(externalToolsPermitted: true) { url, _ in
+        let model = ConversionViewModel(externalToolsPermitted: true) { url, _, _ in
             await requests.record(url)
             return Data(url.lastPathComponent.utf8)
         }

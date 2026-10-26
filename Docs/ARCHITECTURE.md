@@ -6,9 +6,9 @@ IconMator consists of a Swift 6 package and the existing SwiftUI Xcode applicati
 
 `IconConversionService` validates the input package, output location and selected developer environment. The source must be a readable directory with an `.icon` extension, valid `icon.json` and a `groups` array. Symbolic links inside the package are rejected. Output inside the input package is refused. Input files are never edited.
 
-`DeveloperToolLocator` honors `DEVELOPER_DIR` (including an Xcode app URL), otherwise reads `xcode-select -p`. It resolves actool, clang and the SDK using xcrun, discovers the selected Xcode's bundled Composer executable, and records Xcode version/build and host version/build. It does not assume Xcode resides in `/Applications/Xcode.app`. Required executable paths are checked again before work; changes to the active selection or recorded versions cause an explicit failure. Conversion is restricted to the exact researched macOS/Xcode combination, rather than implying untested version compatibility.
+`DeveloperToolLocator` honors `DEVELOPER_DIR` (including an Xcode app URL), otherwise reads `xcode-select -p`. It resolves actool, clang and the SDK using xcrun, discovers the selected Xcode's bundled Composer executable, and records Xcode version/build and host version/build. It does not assume Xcode resides in `/Applications/Xcode.app`. Required executable paths are checked again before work; changes to the active selection or recorded versions cause an explicit failure. Conversion is restricted to the exact researched macOS/Xcode combination, rather than implying untested version compatibility. The Composer executable and its version are reported by the capability probe; its absence affects only Dark and Mono.
 
-`IconRenderingBackend` separates rendering from orchestration. The implemented `CompiledAssetBackend`:
+`IconRenderingBackend` separates rendering from orchestration. `IconRenderingRouter` keeps the Default appearance on the existing `CompiledAssetBackend` and routes Dark and Mono to `ComposerRenderingBackend`. `CompiledAssetBackend`:
 
 1. Copies the input into a unique private temporary workspace as `AppIcon.icon`.
 2. Invokes actool directly for macOS, deployment target 26.0, Default app icon, standalone behavior `all`.
@@ -16,6 +16,15 @@ IconMator consists of a Swift 6 package and the existing SwiftUI Xcode applicati
 4. Compiles our own minimal C stub using the selected clang and SDK. Creates a complete temporary `.app` with that executable and the compiled resources. Each bundle has a fresh URL and identifier; the app is **never launched**.
 5. Uses public NSWorkspace under Aqua/Default appearance to obtain system-rendered images at each required size. Source images smaller than the request are rejected. The generic application icon is rejected. Equal-size 1×/2× slots share bytes.
 6. Renders into sRGB with preserved alpha and explicit no-tone-mapping for extended-range HDR sources. It never synthesizes Liquid Glass, adds padding, clips artwork to a custom mask, creates shadows, or scales an already correct master to an assumed inner size.
+
+`ComposerRenderingBackend` handles Dark and Mono:
+
+1. Copies the input into the same kind of isolated temporary workspace and never edits the original package.
+2. Invokes the selected Xcode's bundled `ictool` with an explicit, verified rendition: `Dark` for Dark and `ClearLight` for Mono. Mono is the untinted light clear variant; `ClearDark` is a distinct variant and is not exposed by the single Mono control.
+3. Validates the direct 1024 × 1024 alpha output and normalizes the complete canvas once to explicit 8-bit sRGB. It does not crop, pad or add effects.
+4. Packages that normalized master as a temporary legacy `AppIcon.icns`, then creates a fresh temporary application bundle with a stub executable. The temporary ICNS is not the exported ICNS and the app is never launched.
+5. Extracts the final icon through the same public `NSWorkspace` path. The system supplies the macOS application-icon canvas and drop shadow; no manual scale/offset or Default alpha is used.
+6. Packages the extracted representations and independently decodes the final ICNS. Every representation must match its packaging source exactly after normalized sRGB comparison.
 
 System icon extraction runs on MainActor because it uses AppKit. Tool processes and expensive validation execute asynchronously outside the SwiftUI model. There is no automatic lower-fidelity rendering fallback.
 
@@ -27,7 +36,7 @@ System icon extraction runs on MainActor because it uses AppKit. Tool processes 
 
 ## Outputs and file-system behavior
 
-The ten slots are 16@1×, 16@2×, 32@1×, 32@2×, 128@1×, 128@2×, 256@1×, 256@2×, 512@1× and 512@2×, covering 16...1024 physical pixels. The optional PNG and UI preview are the same rendered 1024 master as the final ICNS.
+The ten slots are 16@1×, 16@2×, 32@1×, 32@2×, 128@1×, 128@2×, 256@1×, 256@2×, 512@1× and 512@2×, covering 16...1024 physical pixels. The optional PNG and UI preview are the same rendered 1024 master as the final ICNS. The selected Default, Dark or Mono appearance applies consistently to all three outputs.
 
 `TemporaryWorkspace` creates UUID directories with mode 0700 and removes them on success, handled failure and cancellation. Independent jobs never share build paths, bundle identifiers or output staging directories. Process logs are private temporary files, with a bounded diagnostic tail in memory.
 
@@ -41,9 +50,9 @@ The ten slots are 16@1×, 16@2×, 32@1×, 32@2×, 128@1×, 128@2×, 256@1×, 256
 
 ## SwiftUI frontend
 
-`ConversionViewModel` owns imports, selection, preview/conversion tasks, statuses and diagnostics. It accepts only valid packages, deduplicates imports, keeps the UI responsive during processing, cancels obsolete preview requests, and runs batch jobs sequentially. Errors are per-job so one failed input does not stop later independent jobs. Successful jobs retain an in-memory PNG preview even if PNG export is disabled.
+`ConversionViewModel` owns imports, selection, appearance, preview/conversion tasks, statuses and diagnostics. It accepts only valid packages, deduplicates imports, keeps the UI responsive during processing, cancels obsolete preview requests, and runs batch jobs sequentially. The selected appearance is captured at batch start. Appearance or tool changes clear rendered previews, exported-output status and the Reveal target; a late preview result is applied only if its task generation, job ID, appearance and tool identity still match. Errors are per-job so one failed input does not stop later independent jobs. Successful jobs retain an in-memory PNG preview even if PNG export is disabled.
 
-`ContentView` uses one shared import/preview workspace, with no sidebar. An empty workspace accepts drops or opens NSOpenPanel; after import it displays the selected rendered icon. Multiple inputs use a horizontal thumbnail tray. New imports become the selection, and the model automatically requests their preview without relying on a SwiftUI selection-change callback. Export-folder selection and optional PNG are below the workspace; Finder reveal, diagnostics and conversion/cancellation actions share the bottom bar. Only current Default rendering is offered; the Diagnostics sheet records reference differences and unvalidated appearance/version modes.
+`ContentView` uses one shared import/preview workspace, with no sidebar. An empty workspace accepts drops or opens NSOpenPanel; after import it displays the selected rendered icon. Multiple inputs use a horizontal thumbnail tray. New imports become the selection, and the model automatically requests their preview without relying on a SwiftUI selection-change callback. Export-folder selection, optional PNG and a compact Default/Dark/Mono segmented control are below the workspace; Finder reveal, diagnostics and conversion/cancellation actions share the bottom bar. Unavailable appearances show the Composer capability reason and disable conversion rather than silently rendering Default. The Diagnostics sheet records per-appearance capabilities, tool versions, rendition, backend and geometry.
 
 `IconImportPanelDelegate` accepts both file and directory selections without relying on extension-to-UTType registration. Its lightweight enablement policy keeps ordinary folders navigable and excludes unrelated files/packages; final validation requires a real, readable `.icon` directory with valid document contents. File/directory flags are applied after the content-type and package settings because macOS 27 can reset them. The delegate remains alive throughout the modal panel session.
 
