@@ -1,0 +1,93 @@
+{
+  "renderCapabilities" : {
+    "capabilities" : [
+      {
+        "appearance" : "default",
+        "backend" : "Icon Composer renderer + system icon presentation",
+        "generation" : 26,
+        "isSupported" : true,
+        "rendition" : "Default",
+        "requiresComposer" : true,
+        "verification" : "Verified by the real generation and appearance integration matrix."
+      },
+      {
+        "appearance" : "dark",
+        "backend" : "Icon Composer renderer + system icon presentation",
+        "generation" : 26,
+        "isSupported" : true,
+        "rendition" : "Dark",
+        "requiresComposer" : true,
+        "verification" : "Verified by the real generation and appearance integration matrix."
+      },
+      {
+        "appearance" : "mono",
+        "backend" : "Icon Composer renderer + system icon presentation",
+        "generation" : 26,
+        "isSupported" : true,
+        "rendition" : "ClearLight",
+        "requiresComposer" : true,
+        "verification" : "Verified by the real generation and appearance integration matrix."
+      },
+      {
+        "appearance" : "default",
+        "backend" : "Compiled icon assets + system icon presentation",
+        "generation" : 27,
+        "isSupported" : true,
+        "rendition" : "Default",
+        "requiresComposer" : false,
+        "verification" : "Existing measured Default backend, retained only when the host rendering generation matches macOS 27."
+      },
+      {
+        "appearance" : "dark",
+        "backend" : "Icon Composer renderer + system icon presentation",
+        "generation" : 27,
+        "isSupported" : true,
+        "rendition" : "Dark",
+        "requiresComposer" : true,
+        "verification" : "Verified by the real generation and appearance integration matrix."
+      },
+      {
+        "appearance" : "mono",
+        "backend" : "Icon Composer renderer + system icon presentation",
+        "generation" : 27,
+        "isSupported" : true,
+        "rendition" : "ClearLight",
+        "requiresComposer" : true,
+        "verification" : "Verified by the real generation and appearance integration matrix."
+      }
+    ],
+    "composerTool" : {
+      "buildVersion" : "129",
+      "interface" : {
+        "designGeneration" : true,
+        "exportImage" : true,
+        "rendition" : true
+      },
+      "path" : "\/Applications\/Xcode.app\/Contents\/Applications\/Icon Composer.app\/Contents\/Executables\/ictool",
+      "shortVersion" : "27.1"
+    },
+    "toolIdentity" : "\/Applications\/Xcode.app\/Contents\/Developer|Xcode 27.1\nBuild version 27A9275\n|27.0.1 (26A434)|\/Applications\/Xcode.app\/Contents\/Developer\/Platforms\/MacOSX.platform\/Developer\/SDKs\/MacOSX27.0.sdk|27.0|\/Applications\/Xcode.app\/Contents\/Applications\/Icon Composer.app\/Contents\/Executables\/ictool|27.1|129|export-image:true|rendition:true|design-generation:true"
+  },
+  "tools" : {
+    "actool" : "file:\/\/\/Applications\/Xcode.app\/Contents\/Developer\/usr\/bin\/actool",
+    "clang" : "file:\/\/\/Applications\/Xcode.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/bin\/clang",
+    "composerInfo" : {
+      "buildVersion" : "129",
+      "interface" : {
+        "designGeneration" : true,
+        "exportImage" : true,
+        "rendition" : true
+      },
+      "path" : "\/Applications\/Xcode.app\/Contents\/Applications\/Icon Composer.app\/Contents\/Executables\/ictool",
+      "shortVersion" : "27.1"
+    },
+    "composerTool" : "file:\/\/\/Applications\/Xcode.app\/Contents\/Applications\/Icon%20Composer.app\/Contents\/Executables\/ictool",
+    "developerDirectory" : "file:\/\/\/Applications\/Xcode.app\/Contents\/Developer\/",
+    "iconutil" : "file:\/\/\/usr\/bin\/iconutil",
+    "operatingSystem" : "27.0.1 (26A434)",
+    "sdk" : "file:\/\/\/Applications\/Xcode.app\/Contents\/Developer\/Platforms\/MacOSX.platform\/Developer\/SDKs\/MacOSX27.0.sdk",
+    "sdkVersion" : "27.0",
+    "xcodeVersion" : "Xcode 27.1\nBuild version 27A9275\n",
+    "xcodebuild" : "file:\/\/\/Applications\/Xcode.app\/Contents\/Developer\/usr\/bin\/xcodebuild"
+  }
+}

@@ -9,8 +9,32 @@ public struct DeveloperTools: Codable, Sendable {
     public let sdkVersion: String
     public let iconutil: URL
     public let composerTool: URL?
+    /// Version and help-interface inspection for the selected Composer renderer.
+    /// Nil when the renderer is absent or its version could not be read.
+    public let composerInfo: ComposerToolInfo?
+    /// Actionable reason when a Composer executable exists but could not be
+    /// inspected. This affects only requests that require Composer.
+    public let composerIssue: String?
     public let xcodeVersion: String
     public let operatingSystem: String
+
+    public init(developerDirectory: URL, xcodebuild: URL, actool: URL, clang: URL, sdk: URL,
+                sdkVersion: String, iconutil: URL, composerTool: URL?,
+                composerInfo: ComposerToolInfo? = nil, composerIssue: String? = nil,
+                xcodeVersion: String, operatingSystem: String) {
+        self.developerDirectory = developerDirectory
+        self.xcodebuild = xcodebuild
+        self.actool = actool
+        self.clang = clang
+        self.sdk = sdk
+        self.sdkVersion = sdkVersion
+        self.iconutil = iconutil
+        self.composerTool = composerTool
+        self.composerInfo = composerInfo
+        self.composerIssue = composerIssue
+        self.xcodeVersion = xcodeVersion
+        self.operatingSystem = operatingSystem
+    }
 
     public var environment: [String: String] {
         var environment = ProcessInfo.processInfo.environment
@@ -18,10 +42,30 @@ public struct DeveloperTools: Codable, Sendable {
         return environment
     }
 
-    /// Stable identity for preview caching and stale-result checks. A tool change
-    /// invalidates previews rather than allowing an old image to be shown.
+    /// Stable identity for preview caching and stale-result checks. It includes
+    /// the Composer version and help-interface result because explicit
+    /// generation selection depends on that renderer inspection.
     public var identity: String {
-        "\(developerDirectory.path)|\(xcodeVersion)|\(operatingSystem)|\(sdk.path)|\(sdkVersion)|\(composerTool?.path ?? "no-composer")"
+        let composerIdentity: String
+        if let composerInfo {
+            composerIdentity = composerInfo.identityFragment
+        } else if let composerIssue {
+            composerIdentity = "interface-error:\(composerIssue)"
+        } else {
+            composerIdentity = "no-composer"
+        }
+        return "\(developerDirectory.path)|\(xcodeVersion)|\(operatingSystem)|\(sdk.path)|\(sdkVersion)|\(composerTool?.path ?? "no-composer")|\(composerIdentity)"
+    }
+
+    /// Only a known macOS 27 host may satisfy an explicit macOS 27 generation
+    /// request with the existing host-dependent compiled-asset path. Unknown or
+    /// future host versions must use an explicit Composer generation request.
+    public var hostMacOSMajorVersion: Int? {
+        Int(operatingSystem.prefix { $0.isNumber })
+    }
+
+    public var hostDesignGeneration: IconDesignGeneration? {
+        hostMacOSMajorVersion.flatMap(IconDesignGeneration.init(rawValue:))
     }
 
     public func validatePinnedTools() throws {
@@ -78,8 +122,20 @@ public struct DeveloperToolLocator: Sendable {
         let osBuild = try await runner.run(executable: URL(fileURLWithPath: "/usr/bin/sw_vers"), arguments: ["-buildVersion"], directory: nil, environment: pinned).output.trimmingCharacters(in: .whitespacesAndNewlines)
         let composerRoot = developer.deletingLastPathComponent().appendingPathComponent("Applications/Icon Composer.app/Contents/Executables")
         let composer = ["ictool", "icontool"].map { composerRoot.appendingPathComponent($0) }.first { FileManager.default.isExecutableFile(atPath: $0.path) }
+        let base = DeveloperTools(developerDirectory: developer, xcodebuild: xcodebuild, actool: actool, clang: clang, sdk: URL(fileURLWithPath: sdkPath), sdkVersion: sdkVersion,
+            iconutil: URL(fileURLWithPath: "/usr/bin/iconutil"), composerTool: composer,
+            xcodeVersion: version, operatingSystem: "\(osVersion) (\(osBuild))")
+        var composerInfo: ComposerToolInfo?
+        var composerIssue: String?
+        if let composer {
+            composerInfo = try await ComposerToolInfo.load(tools: base, runner: runner)
+            if composerInfo == nil {
+                composerIssue = "The Icon Composer renderer version could not be read: \(composer.path). Reinstall or reselect Xcode before exporting a combination that requires Composer."
+            }
+        }
         let tools = DeveloperTools(developerDirectory: developer, xcodebuild: xcodebuild, actool: actool, clang: clang, sdk: URL(fileURLWithPath: sdkPath), sdkVersion: sdkVersion,
             iconutil: URL(fileURLWithPath: "/usr/bin/iconutil"), composerTool: composer,
+            composerInfo: composerInfo, composerIssue: composerIssue,
             xcodeVersion: version, operatingSystem: "\(osVersion) (\(osBuild))")
         try tools.validatePinnedTools()
         return tools

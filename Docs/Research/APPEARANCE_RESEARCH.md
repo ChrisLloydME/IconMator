@@ -1,6 +1,6 @@
 # Appearance research: Default, Dark and Mono
 
-Research date: 2026-10-26. Status: **verified rendering path implemented; Default preserved on its existing backend; interactive visual acceptance not performed.**
+Research date: 2026-10-26. Status: **verified appearance renditions implemented; macOS 27 + Default preserved on its existing host-matched backend; generation selection validated separately; interactive visual acceptance not performed.**
 
 ## Environment and tools
 
@@ -179,11 +179,21 @@ amount.
 
 ## Selection decision
 
-| Requested appearance | Backend | Icon Composer rendition |
-| --- | --- | --- |
-| Default | Compiled assets + system extraction (unchanged) | `Default` (not used by the Default backend) |
-| Dark | Composer direct render + legacy ICNS system presentation | `Dark` |
-| Mono | Composer direct render + legacy ICNS system presentation | `ClearLight` |
+Appearance is independent of the separately selectable macOS rendering generation.
+The complete routing is:
+
+| Request | Backend | Icon Composer rendition | Generation argument |
+| --- | --- | --- | --- |
+| macOS 27 + Default on a known macOS 27 host | Compiled assets + system extraction (unchanged) | `Default` (not used by the compiled backend) | none; the host generation matches |
+| macOS 27 + Default on another or unknown host | Composer direct render + legacy ICNS system presentation | `Default` | `--design-generation 27` |
+| macOS 26 + Default | Composer direct render + legacy ICNS system presentation | `Default` | `--design-generation 26` |
+| Either generation + Dark | Composer direct render + legacy ICNS system presentation | `Dark` | selected generation |
+| Either generation + Mono | Composer direct render + legacy ICNS system presentation | `ClearLight` | selected generation |
+
+The appearance-only measurements in this document used the generation 27 Composer
+path unless noted. The six-combination final-image measurements, routing and
+generation-specific limitations are in
+[GENERATION_RESEARCH.md](GENERATION_RESEARCH.md).
 
 Mono is the untinted clear/light variant. `ClearDark` is a distinct dark clear
 variant and is available from the renderer, but it is not exposed by this UI: the
@@ -202,6 +212,9 @@ a separate, explicit choice rather than an implicit fallback.
 - The direct renderer's legacy ICNS presentation was measured on macOS 27.0.1 with
   Xcode 27.1. The current policy allows other OS/Xcode combinations when the
   selected macOS SDK is 27.x; those combinations remain unmeasured here.
+- Generation 26 was exercised on this macOS 27 host only. No independent Finder
+  reference or macOS 26 runtime was available; see
+  [GENERATION_RESEARCH.md](GENERATION_RESEARCH.md).
 - The research reference probe uses a private framework and is not part of the
   application or test suite. It is retained only as local `.research/` evidence.
 

@@ -7,9 +7,9 @@ struct ConversionJob: Identifiable {
     let input: URL
     var status = "Ready"
     var output: URL?
-    var outputAppearance: IconAppearance?
+    var outputOptions: IconRenderOptions?
     var preview: Data?
-    var previewAppearance: IconAppearance?
+    var previewOptions: IconRenderOptions?
     var previewToolIdentity: String?
     var error: String?
     var diagnostics = ""
@@ -25,15 +25,35 @@ final class ConversionViewModel {
     }
     var destination: URL?
     var exportPNG = false
-    var appearance: IconAppearance = .default {
+    private var storedGeneration: IconDesignGeneration = .macOS27
+    private var storedAppearance: IconAppearance = .default
+
+    /// Ignore rendering-control changes while a batch is active. The controls are
+    /// disabled in the view, and this setter guard also protects the captured
+    /// options from programmatic or delayed changes.
+    var generation: IconDesignGeneration {
+        get { storedGeneration }
+        set {
+            guard newValue != storedGeneration, !isConverting else { return }
+            storedGeneration = newValue
+            renderOptionsChanged()
+        }
+    }
+    var appearance: IconAppearance {
+        get { storedAppearance }
+        set {
+            guard newValue != storedAppearance, !isConverting else { return }
+            storedAppearance = newValue
+            renderOptionsChanged()
+        }
+    }
+    var tools: DeveloperTools? {
         didSet {
-            guard appearance != oldValue, !isConverting else { return }
+            guard tools?.identity != oldValue?.identity, !isConverting else { return }
             invalidatePreviewsAndOutputs()
             renderSelectedPreview()
         }
     }
-    var tools: DeveloperTools?
-    var appearanceCapabilities: AppearanceCapabilities?
     var toolStatus = "Checking developer tools…"
     var toolIssue: String?
     var message: String?
@@ -48,12 +68,12 @@ final class ConversionViewModel {
     @ObservationIgnored private var previewGeneration = UUID()
     @ObservationIgnored private let externalToolsPermitted: Bool
     @ObservationIgnored private let converter: any IconConversionPerforming
-    @ObservationIgnored private let previewRenderer: @Sendable (URL, IconAppearance, DeveloperTools) async throws -> Data
+    @ObservationIgnored private let previewRenderer: @Sendable (URL, IconRenderOptions, DeveloperTools) async throws -> Data
 
     init(externalToolsPermitted: Bool? = nil,
          converter: any IconConversionPerforming = IconConversionService(),
-         previewRenderer: @escaping @Sendable (URL, IconAppearance, DeveloperTools) async throws -> Data = { input, appearance, tools in
-             try await IconConversionService().preview(input: input, appearance: appearance, tools: tools)
+         previewRenderer: @escaping @Sendable (URL, IconRenderOptions, DeveloperTools) async throws -> Data = { input, options, tools in
+             try await IconConversionService().preview(input: input, options: options, tools: tools)
          }) {
         self.converter = converter
         self.previewRenderer = previewRenderer
@@ -65,24 +85,40 @@ final class ConversionViewModel {
     }
 
     var selectedJob: ConversionJob? { jobs.first { $0.id == selection } }
+
+    /// The immutable request represented by the current controls.
+    var renderOptions: IconRenderOptions {
+        IconRenderOptions(generation: generation, appearance: appearance)
+    }
+
+    /// Capabilities are derived from the actual located tools, including the
+    /// Composer version and help interface, so cached capability state cannot
+    /// silently outlive a tool change.
+    var renderCapabilities: RenderCapabilities? {
+        tools.map(RenderCapabilities.probe)
+    }
+
+    var selectedCapability: RenderCapability? {
+        renderCapabilities?.capability(for: renderOptions)
+    }
+
+    var toolIdentity: String? { tools?.identity }
+
     var canConvert: Bool {
         tools != nil && toolIssue == nil && !isConverting && !isCheckingTools &&
-        !jobs.isEmpty && destination != nil && appearanceIssue == nil
+        !jobs.isEmpty && destination != nil && renderIssue == nil &&
+        selectedCapability?.isSupported == true
     }
     var revealTarget: URL? {
-        guard let job = selectedJob, job.outputAppearance == appearance else { return nil }
+        guard let job = selectedJob, job.outputOptions == renderOptions else { return nil }
         return job.output
     }
-    var appearanceIssue: String? {
-        guard appearance != .default else { return nil }
-        if let capability = appearanceCapabilities?.capability(for: appearance) {
-            return capability.isSupported ? nil : (capability.reason ?? "This appearance is unavailable.")
+    var renderIssue: String? {
+        guard tools != nil else { return nil }
+        guard let capability = selectedCapability else {
+            return "This rendering combination is unavailable from the selected developer tools."
         }
-        guard tools != nil else { return "Developer tools are not ready." }
-        guard tools?.composerTool != nil else {
-            return "Dark and Mono require the Icon Composer renderer bundled with the selected Xcode."
-        }
-        return nil
+        return capability.isSupported ? nil : (capability.reason ?? "This rendering combination is unavailable.")
     }
 
     func refreshTools() {
@@ -92,7 +128,7 @@ final class ConversionViewModel {
             toolStatus = "External rendering unavailable in this build"
             return
         }
-        isCheckingTools = true; toolIssue = nil; tools = nil; appearanceCapabilities = nil
+        isCheckingTools = true; toolIssue = nil; tools = nil
         invalidatePreviewsAndOutputs()
         toolTask = Task {
             defer { isCheckingTools = false }
@@ -100,14 +136,14 @@ final class ConversionViewModel {
                 let found = try await DeveloperToolLocator().locate()
                 try Task.checkCancellation()
                 try found.requireSupportedSDK()
-                let capabilities = await AppearanceCapabilities.probe(tools: found)
-                try Task.checkCancellation()
                 tools = found
-                appearanceCapabilities = capabilities
-                var status = "macOS \(found.operatingSystem) · \(found.xcodeVersion.components(separatedBy: .newlines).first ?? "Xcode")"
+                var status = "Host: macOS \(found.operatingSystem) · \(found.xcodeVersion.components(separatedBy: .newlines).first ?? "Xcode")"
                 status += " · macOS SDK \(found.sdkVersion)"
-                if let composer = capabilities.composerTool {
+                if let composer = found.composerInfo {
                     status += " · Icon Composer \(composer.displayVersion)"
+                    if !composer.supportsGenerationSelection {
+                        status += " · explicit generation selection unavailable"
+                    }
                 } else if found.composerTool != nil {
                     status += " · Icon Composer version unreadable"
                 }
@@ -173,51 +209,53 @@ final class ConversionViewModel {
     func renderSelectedPreview() {
         previewTask?.cancel(); previewGeneration = UUID(); isPreviewing = false
         guard !isConverting, let tools, toolIssue == nil, let job = selectedJob else { return }
-        if let issue = appearanceIssue {
+        if let issue = renderIssue {
             if let index = jobs.firstIndex(where: { $0.id == job.id }) {
                 jobs[index].preview = nil
-                jobs[index].previewAppearance = nil
+                jobs[index].previewOptions = nil
                 jobs[index].previewToolIdentity = nil
                 jobs[index].error = "Preview: \(issue)"
             }
             return
         }
         let identity = tools.identity
-        if job.preview != nil, job.previewAppearance == appearance, job.previewToolIdentity == identity { return }
-        let id = job.id, generation = previewGeneration, capturedAppearance = appearance
+        let options = renderOptions
+        if job.preview != nil, job.previewOptions == options, job.previewToolIdentity == identity { return }
+        let id = job.id, generationToken = previewGeneration
         isPreviewing = true
         previewTask = Task {
             do {
-                let data = try await previewRenderer(job.input, capturedAppearance, tools)
+                let data = try await previewRenderer(job.input, options, tools)
                 try Task.checkCancellation()
-                guard previewGeneration == generation,
-                      self.appearance == capturedAppearance,
+                guard previewGeneration == generationToken,
+                      self.renderOptions == options,
                       self.tools?.identity == identity,
                       let index = jobs.firstIndex(where: { $0.id == id }) else { return }
                 jobs[index].preview = data
-                jobs[index].previewAppearance = capturedAppearance
+                jobs[index].previewOptions = options
                 jobs[index].previewToolIdentity = identity
                 jobs[index].error = nil
             } catch is CancellationError {
-                // A newer selection, appearance, or tool refresh owns the preview now.
+                // A newer selection, options change, or tool refresh owns the preview now.
             } catch {
-                guard !Task.isCancelled, previewGeneration == generation,
-                      self.appearance == capturedAppearance else { return }
+                guard !Task.isCancelled, previewGeneration == generationToken,
+                      self.renderOptions == options,
+                      self.tools?.identity == identity else { return }
                 if let index = jobs.firstIndex(where: { $0.id == id }) {
                     jobs[index].preview = nil
-                    jobs[index].previewAppearance = nil
+                    jobs[index].previewOptions = nil
                     jobs[index].previewToolIdentity = nil
                     jobs[index].error = "Preview: \(error.localizedDescription)"
                     jobs[index].diagnostics = (error as? ConversionError)?.diagnostic ?? ""
                 }
             }
-            if previewGeneration == generation { isPreviewing = false }
+            if previewGeneration == generationToken { isPreviewing = false }
         }
     }
 
     func startConversion() {
         guard canConvert, let tools, let destination else { return }
-        let batchAppearance = appearance
+        let batchOptions = renderOptions
         let plan = BatchPlanner.plan(inputs: jobs.map(\.input), folder: destination)
         let existing = plan.flatMap { item in
             [item.output] + (exportPNG ? [item.output.deletingPathExtension().appendingPathExtension("png")] : [])
@@ -238,20 +276,20 @@ final class ConversionViewModel {
         conversionTask = Task {
             defer { isConverting = false; currentStage = ""; conversionTask = nil }
             for item in plan {
-                if Task.isCancelled || self.appearance != batchAppearance { break }
+                if Task.isCancelled || self.renderOptions != batchOptions { break }
                 guard let index = jobs.firstIndex(where: { $0.input == item.input }) else { continue }
                 let id = jobs[index].id
-                jobs[index].error = nil; jobs[index].output = nil; jobs[index].outputAppearance = nil
+                jobs[index].error = nil; jobs[index].output = nil; jobs[index].outputOptions = nil
                 do {
                     let result = try await converter.convert(input: item.input, destination: item.output, tools: tools,
-                        appearance: batchAppearance, exportPNG: savePNG, overwrite: replace) { stage in
+                        options: batchOptions, exportPNG: savePNG, overwrite: replace) { stage in
                         await self.updateProgress(id: id, stage: stage)
                     }
-                    guard !Task.isCancelled, self.appearance == batchAppearance else { break }
+                    guard !Task.isCancelled else { break }
                     jobs[index].output = result.icns
-                    jobs[index].outputAppearance = result.appearance
+                    jobs[index].outputOptions = result.options
                     jobs[index].preview = result.previewPNG
-                    jobs[index].previewAppearance = result.appearance
+                    jobs[index].previewOptions = result.options
                     jobs[index].previewToolIdentity = tools.identity
                     jobs[index].diagnostics = result.environment + "\n" + result.diagnostics
                     jobs[index].status = "Exported and verified"
@@ -271,19 +309,23 @@ final class ConversionViewModel {
         if let index = jobs.firstIndex(where: { $0.id == id }) { jobs[index].status = stage.rawValue }
     }
 
-    /// Clears anything that was rendered for the previous appearance or tool
-    /// identity. A late result must not be shown as if it belonged to the new
-    /// selection.
+    private func renderOptionsChanged() {
+        invalidatePreviewsAndOutputs()
+        renderSelectedPreview()
+    }
+
+    /// Clears anything that was rendered for different options or tool identity.
+    /// A late result must not be shown as if it belonged to the new request.
     private func invalidatePreviewsAndOutputs() {
         previewTask?.cancel()
         previewGeneration = UUID()
         isPreviewing = false
         for index in jobs.indices {
             jobs[index].preview = nil
-            jobs[index].previewAppearance = nil
+            jobs[index].previewOptions = nil
             jobs[index].previewToolIdentity = nil
             jobs[index].output = nil
-            jobs[index].outputAppearance = nil
+            jobs[index].outputOptions = nil
             jobs[index].diagnostics = ""
             jobs[index].error = nil
             jobs[index].status = "Ready"

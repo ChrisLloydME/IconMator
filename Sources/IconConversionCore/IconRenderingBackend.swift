@@ -4,34 +4,43 @@ public struct RenderedIcon: Sendable {
     public let iconset: URL
     public let masterPNG: URL
     public let diagnostics: String
-    public let appearance: IconAppearance
+    public let options: IconRenderOptions
     public let rendition: String
     public let backend: String
+    public let composerVersion: String?
 
-    public init(iconset: URL, masterPNG: URL, diagnostics: String, appearance: IconAppearance,
-                rendition: String, backend: String) {
+    public init(iconset: URL, masterPNG: URL, diagnostics: String, options: IconRenderOptions,
+                rendition: String, backend: String, composerVersion: String?) {
         self.iconset = iconset
         self.masterPNG = masterPNG
         self.diagnostics = diagnostics
-        self.appearance = appearance
+        self.options = options
         self.rendition = rendition
         self.backend = backend
+        self.composerVersion = composerVersion
     }
+
+    public var generation: IconDesignGeneration { options.generation }
+    public var appearance: IconAppearance { options.appearance }
 }
 
 public protocol IconRenderingBackend: Sendable {
-    func render(input: URL, appearance: IconAppearance, workspace: URL, tools: DeveloperTools) async throws -> RenderedIcon
+    func render(input: URL, options: IconRenderOptions, workspace: URL, tools: DeveloperTools) async throws -> RenderedIcon
 }
 
 /// Compiles genuine Apple assets, then asks IconServices for their current Default rendering.
 /// The temporary app is never launched. Unique bundle identity avoids stale IconServices cache entries.
+/// This host-dependent path only satisfies an explicit macOS 27 request on a known macOS 27 host.
 public struct CompiledAssetBackend: IconRenderingBackend {
     private let runner: any ProcessRunning
     public init(runner: any ProcessRunning = ProcessRunner()) { self.runner = runner }
 
-    public func render(input: URL, appearance: IconAppearance, workspace: URL, tools: DeveloperTools) async throws -> RenderedIcon {
-        guard appearance == .default else {
+    public func render(input: URL, options: IconRenderOptions, workspace: URL, tools: DeveloperTools) async throws -> RenderedIcon {
+        guard options.appearance == .default else {
             throw ConversionError.validation("The compiled-asset backend only renders the Default appearance.")
+        }
+        guard options.generation == .macOS27, tools.hostDesignGeneration == .macOS27 else {
+            throw ConversionError.unsupportedTool("The compiled-asset Default path cannot explicitly satisfy \(options.generation.displayName) rendering on this host. Use the Icon Composer renderer for an explicit generation request.")
         }
         try tools.requireSupportedSDK()
         let fm = FileManager.default
@@ -72,9 +81,24 @@ public struct CompiledAssetBackend: IconRenderingBackend {
         try fm.createDirectory(at: iconset, withIntermediateDirectories: false)
         let extractionDiagnostics = try await SystemIconExtractor.extract(bundle: bundle, to: iconset)
         try ConversionValidator().validateIconset(iconset)
-        return RenderedIcon(iconset: iconset, masterPNG: iconset.appendingPathComponent("icon_512x512@2x.png"),
-            diagnostics: compilation.output + compilationOfStub.output + extractionDiagnostics,
-            appearance: .default, rendition: ComposerRendition.default.rawValue,
-            backend: "Compiled icon assets + system icon presentation")
+        let master = iconset.appendingPathComponent("icon_512x512@2x.png")
+        let masterImage = try RasterImage(url: master)
+        var diagnostics = "Rendering: \(options.generation.displayName)\n"
+        diagnostics += "Appearance: \(options.appearance.displayName)\n"
+        diagnostics += "Rendition: \(ComposerRendition.default.rawValue)\n"
+        diagnostics += "Backend: \(RenderCapabilities.compiledBackendName)\n"
+        diagnostics += "Host: macOS \(tools.operatingSystem); Xcode: \(tools.xcodeVersion.trimmingCharacters(in: .whitespacesAndNewlines)); SDK: macOS \(tools.sdkVersion)\n"
+        diagnostics += "Generation source: host-dependent compiled assets on a known macOS 27 host; no explicit Composer generation argument is used.\n"
+        diagnostics += "Final 1024 canvas: alpha>=1 \(Self.describe(masterImage.geometry.visibleBounds)), alpha>=128 \(Self.describe(masterImage.geometry.solidBounds))\n"
+        diagnostics += compilation.output + compilationOfStub.output + extractionDiagnostics
+        return RenderedIcon(iconset: iconset, masterPNG: master,
+            diagnostics: diagnostics, options: options,
+            rendition: ComposerRendition.default.rawValue,
+            backend: RenderCapabilities.compiledBackendName, composerVersion: nil)
+    }
+
+    private static func describe(_ bounds: PixelBounds?) -> String {
+        guard let bounds else { return "none" }
+        return "x=\(bounds.x) y=\(bounds.y) w=\(bounds.width) h=\(bounds.height)"
     }
 }

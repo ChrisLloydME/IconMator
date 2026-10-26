@@ -1,6 +1,6 @@
 # Rendering research
 
-Research date: 2026-10-25. Status: **working prototype evaluated; compiled-assets + IconServices backend selected for the researched environment. Final visual acceptance remains open.**
+Research date: 2026-10-25, updated 2026-10-26. Status: **working prototype evaluated; compiled-assets + IconServices backend retained for macOS 27 Default on a known macOS 27 host; explicit macOS 26/27 generation selection implemented for the remaining combinations. Final visual acceptance remains open.**
 
 ## Environment
 
@@ -27,6 +27,14 @@ ictool --version
 ```
 
 Both generation values execute successfully for macOS/Default. This establishes command support, not fidelity to both OS versions. The older positional `--export-preview` interface is not used.
+
+Generation selection is now exposed as an independent product option. The production
+Composer path inspects the selected renderer's version and help tokens, requires
+`--export-image`, `--rendition` and `--design-generation`, and passes the requested
+generation explicitly. macOS 27 + Default on a known macOS 27 host keeps the
+compiled-asset path; every other combination uses Composer. See
+[GENERATION_RESEARCH.md](GENERATION_RESEARCH.md) for routing, measurements and
+limitations.
 
 The installed actool manual documents `--standalone-icon-behavior default|all|none`. The installed `AssetCatalogCompiler.xcspec` confirms that `ASSETCATALOG_COMPILER_STANDALONE_ICON_BEHAVIOR=all` passes `--standalone-icon-behavior all`.
 
@@ -113,7 +121,7 @@ Experiments retained under `Docs/Research/Comparisons/Packaging-*` demonstrate t
 
 ### Scope and remaining acceptance
 
-The feasibility gate for implementing the small UI is satisfied by a working, independently decoded real conversion. This is an **experimental local utility**, not a claim of completed visual acceptance. These measurements cover macOS 27.0.1 build 26A434 with Xcode 27.1 build 27A9275. The current compatibility policy accepts macOS SDK 27.x without exact host/Xcode build restrictions; other environments have not received equivalent fidelity measurements. No 26/27 generation selector is offered. Dark and Mono now use separately verified Icon Composer renditions; see the [appearance research](APPEARANCE_RESEARCH.md).
+The feasibility gate for implementing the small UI is satisfied by a working, independently decoded real conversion. This is an **experimental local utility**, not a claim of completed visual acceptance. These measurements cover macOS 27.0.1 build 26A434 with Xcode 27.1 build 27A9275. The current compatibility policy accepts macOS SDK 27.x without exact host/Xcode build restrictions; other environments have not received equivalent fidelity measurements. Dark and Mono use separately verified Icon Composer renditions; see the [appearance research](APPEARANCE_RESEARCH.md). The macOS 26/27 generation selector uses explicit Composer arguments for generation 26 and for every appearance except macOS 27 + Default on a known macOS 27 host; see the [generation research](GENERATION_RESEARCH.md).
 
 Multiple local sources are structural controls, but only one Finder reference is available. Transparent backgrounds, additional boundary geometries and stronger refraction need reference fixtures. Finder custom-icon display and visual review at multiple scales remain unperformed under the no-GUI verification instruction. The output is a static snapshot; editable layers and runtime material behavior are not preserved.
 

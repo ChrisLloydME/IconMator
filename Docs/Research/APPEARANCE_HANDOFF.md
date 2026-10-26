@@ -1,8 +1,10 @@
 # Appearance implementation handoff
 
 > Historical appearance implementation checkpoint. The later SDK 27 compatibility
-> update removes the exact host/Xcode gate described below. See
-> [VALIDATION_REPORT.md](VALIDATION_REPORT.md) for the current policy.
+> update removes the exact host/Xcode gate described below, and the macOS 26/27
+> generation update replaces the appearance-only routing and capability shape.
+> See [GENERATION_RESEARCH.md](GENERATION_RESEARCH.md) and
+> [VALIDATION_REPORT.md](VALIDATION_REPORT.md) for the current behavior.
 
 
 Date: 2026-10-26. State: **paused at a clean checkpoint after core, CLI, UI and tests were committed and verified. No implementation work is left uncommitted.**

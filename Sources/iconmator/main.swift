@@ -4,7 +4,7 @@ import IconConversionCore
 @main struct IconMatorCLI {
     private struct ToolsReport: Codable {
         let tools: DeveloperTools
-        let appearanceCapabilities: AppearanceCapabilities
+        let renderCapabilities: RenderCapabilities
     }
 
     static func main() async {
@@ -19,15 +19,15 @@ import IconConversionCore
                 print(String(decoding: try encoder.encode(report), as: UTF8.self))
             } else if args == ["tools"] {
                 let tools = try await DeveloperToolLocator().locate()
-                let capabilities = await AppearanceCapabilities.probe(tools: tools)
-                print(String(decoding: try encoder.encode(ToolsReport(tools: tools, appearanceCapabilities: capabilities)), as: UTF8.self))
+                let capabilities = RenderCapabilities.probe(tools: tools)
+                print(String(decoding: try encoder.encode(ToolsReport(tools: tools, renderCapabilities: capabilities)), as: UTF8.self))
             } else if args.first == "convert" {
                 let options = try CommandLineOptions.parseConvert(args)
                 let service = IconConversionService()
                 let tools = try await DeveloperToolLocator().locate()
                 let result = try await service.convert(input: URL(fileURLWithPath: options.input),
                     destination: URL(fileURLWithPath: options.output), tools: tools,
-                    appearance: options.appearance, exportPNG: options.exportPNG, overwrite: options.overwrite) { stage in
+                    options: options.options, exportPNG: options.exportPNG, overwrite: options.overwrite) { stage in
                         FileHandle.standardError.write(Data((stage.rawValue + "\n").utf8))
                     }
                 print(result.icns.path)

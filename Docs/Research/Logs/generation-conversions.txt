@@ -1,0 +1,235 @@
+# Generation/appearance CLI conversion evidence
+# Date: 2026-10-26
+# Host: macOS 27.0.1 (26A434), Xcode 27.1 (27A9275), Icon Composer 27.1 (129)
+# Source: ReferenceInputs/Metadatics/Metadatics.icon (private fixture; not committed)
+# Build: .build/native/debug/iconmator
+
+======================================================================
+$ .build/native/debug/iconmator convert ReferenceInputs/Metadatics/Metadatics.icon .research/GenerationValidation/Metadatics-26-default.icns --generation 26 --appearance default --png --replace --diagnostics
+exit status: 0
+--- stdout ---
+/Users/lloyd/Developer/IconMator/.research/GenerationValidation/Metadatics-26-default.icns
+Rendering: macOS 26; Appearance: Default; Host: macOS 27.0.1 (26A434); Xcode 27.1
+Build version 27A9275; macOS SDK 27.0; Rendition: Default; Backend: Icon Composer renderer + system icon presentation
+Rendering: macOS 26
+Appearance: Default
+Rendition: Default
+Backend: Icon Composer renderer + system icon presentation
+Host: macOS 27.0.1 (26A434); Xcode: Xcode 27.1
+Build version 27A9275; SDK: macOS 27.0
+Composer: /Applications/Xcode.app/Contents/Applications/Icon Composer.app/Contents/Executables/ictool (27.1 (129))
+Composer interface: --export-image, --rendition, --design-generation
+Generation argument: --design-generation 26
+Direct export: 1024×1024, 16 bits/component, kCGColorSpaceDisplayP3, alpha=true, toneMap=false
+Normalization: complete canvas to 8-bit sRGB premultiplied RGBA; tone mapping automatic
+Presentation: temporary legacy ICNS in a fresh application bundle; public NSWorkspace extraction supplies the current host's macOS canvas and shadow
+Final 1024 canvas: alpha>=1 x=67 y=76 w=890 h=888, alpha>=128 x=100 y=100 w=824 h=824
+Independent ICNS packaging: iconutil decode and exact normalized pixel comparison passed for all ten representations
+Renderer output: {
+
+}
+System request 1024px: source 1024×1024, 16 bits/component
+System request 512px: source 1024×1024, 16 bits/component
+System request 256px: source 512×512, 16 bits/component
+System request 128px: source 256×256, 16 bits/component
+System request 64px: source 128×128, 16 bits/component
+System request 32px: source 64×64, 16 bits/component
+System request 16px: source 32×32, 16 bits/component
+Packaging: independent iconutil decode and exact normalized pixel comparison passed for all ten representations
+
+--- stderr ---
+Checking input and tools
+Compiling and rendering icon
+Packaging and verifying ICNS
+Saving verified output
+
+======================================================================
+$ .build/native/debug/iconmator convert ReferenceInputs/Metadatics/Metadatics.icon .research/GenerationValidation/Metadatics-26-dark.icns --generation 26 --appearance dark --png --replace --diagnostics
+exit status: 0
+--- stdout ---
+/Users/lloyd/Developer/IconMator/.research/GenerationValidation/Metadatics-26-dark.icns
+Rendering: macOS 26; Appearance: Dark; Host: macOS 27.0.1 (26A434); Xcode 27.1
+Build version 27A9275; macOS SDK 27.0; Rendition: Dark; Backend: Icon Composer renderer + system icon presentation
+Rendering: macOS 26
+Appearance: Dark
+Rendition: Dark
+Backend: Icon Composer renderer + system icon presentation
+Host: macOS 27.0.1 (26A434); Xcode: Xcode 27.1
+Build version 27A9275; SDK: macOS 27.0
+Composer: /Applications/Xcode.app/Contents/Applications/Icon Composer.app/Contents/Executables/ictool (27.1 (129))
+Composer interface: --export-image, --rendition, --design-generation
+Generation argument: --design-generation 26
+Direct export: 1024×1024, 16 bits/component, kCGColorSpaceDisplayP3, alpha=true, toneMap=false
+Normalization: complete canvas to 8-bit sRGB premultiplied RGBA; tone mapping automatic
+Presentation: temporary legacy ICNS in a fresh application bundle; public NSWorkspace extraction supplies the current host's macOS canvas and shadow
+Final 1024 canvas: alpha>=1 x=67 y=76 w=890 h=888, alpha>=128 x=100 y=100 w=824 h=824
+Independent ICNS packaging: iconutil decode and exact normalized pixel comparison passed for all ten representations
+Renderer output: {
+
+}
+System request 1024px: source 1024×1024, 16 bits/component
+System request 512px: source 1024×1024, 16 bits/component
+System request 256px: source 512×512, 16 bits/component
+System request 128px: source 256×256, 16 bits/component
+System request 64px: source 128×128, 16 bits/component
+System request 32px: source 64×64, 16 bits/component
+System request 16px: source 32×32, 16 bits/component
+Packaging: independent iconutil decode and exact normalized pixel comparison passed for all ten representations
+
+--- stderr ---
+Checking input and tools
+Compiling and rendering icon
+Packaging and verifying ICNS
+Saving verified output
+
+======================================================================
+$ .build/native/debug/iconmator convert ReferenceInputs/Metadatics/Metadatics.icon .research/GenerationValidation/Metadatics-26-mono.icns --generation 26 --appearance mono --png --replace --diagnostics
+exit status: 0
+--- stdout ---
+/Users/lloyd/Developer/IconMator/.research/GenerationValidation/Metadatics-26-mono.icns
+Rendering: macOS 26; Appearance: Mono; Host: macOS 27.0.1 (26A434); Xcode 27.1
+Build version 27A9275; macOS SDK 27.0; Rendition: ClearLight; Backend: Icon Composer renderer + system icon presentation
+Rendering: macOS 26
+Appearance: Mono
+Rendition: ClearLight
+Backend: Icon Composer renderer + system icon presentation
+Host: macOS 27.0.1 (26A434); Xcode: Xcode 27.1
+Build version 27A9275; SDK: macOS 27.0
+Composer: /Applications/Xcode.app/Contents/Applications/Icon Composer.app/Contents/Executables/ictool (27.1 (129))
+Composer interface: --export-image, --rendition, --design-generation
+Generation argument: --design-generation 26
+Direct export: 1024×1024, 16 bits/component, kCGColorSpaceDisplayP3, alpha=true, toneMap=false
+Normalization: complete canvas to 8-bit sRGB premultiplied RGBA; tone mapping automatic
+Presentation: temporary legacy ICNS in a fresh application bundle; public NSWorkspace extraction supplies the current host's macOS canvas and shadow
+Final 1024 canvas: alpha>=1 x=67 y=76 w=890 h=888, alpha>=128 x=100 y=100 w=824 h=824
+Independent ICNS packaging: iconutil decode and exact normalized pixel comparison passed for all ten representations
+Renderer output: {
+
+}
+System request 1024px: source 1024×1024, 16 bits/component
+System request 512px: source 1024×1024, 16 bits/component
+System request 256px: source 512×512, 16 bits/component
+System request 128px: source 256×256, 16 bits/component
+System request 64px: source 128×128, 16 bits/component
+System request 32px: source 64×64, 16 bits/component
+System request 16px: source 32×32, 16 bits/component
+Packaging: independent iconutil decode and exact normalized pixel comparison passed for all ten representations
+
+--- stderr ---
+Checking input and tools
+Compiling and rendering icon
+Packaging and verifying ICNS
+Saving verified output
+
+======================================================================
+$ .build/native/debug/iconmator convert ReferenceInputs/Metadatics/Metadatics.icon .research/GenerationValidation/Metadatics-27-default.icns --generation 27 --appearance default --png --replace --diagnostics
+exit status: 0
+--- stdout ---
+/Users/lloyd/Developer/IconMator/.research/GenerationValidation/Metadatics-27-default.icns
+Rendering: macOS 27; Appearance: Default; Host: macOS 27.0.1 (26A434); Xcode 27.1
+Build version 27A9275; macOS SDK 27.0; Rendition: Default; Backend: Compiled icon assets + system icon presentation
+Rendering: macOS 27
+Appearance: Default
+Rendition: Default
+Backend: Compiled icon assets + system icon presentation
+Host: macOS 27.0.1 (26A434); Xcode: Xcode 27.1
+Build version 27A9275; SDK: macOS 27.0
+Generation source: host-dependent compiled assets on a known macOS 27 host; no explicit Composer generation argument is used.
+Final 1024 canvas: alpha>=1 x=67 y=76 w=890 h=888, alpha>=128 x=100 y=100 w=824 h=824
+/* com.apple.actool.compilation-results */
+/var/folders/gx/w1cq6f8j41sdgkfp0c5ndb_m0000gn/T/IconMator-CD987804-55AA-48BF-B7BB-660230FD03E7/Render-BFA69270-5A83-410E-8B2C-8873E6F13274.app/Contents/Resources/AppIcon.icns
+/var/folders/gx/w1cq6f8j41sdgkfp0c5ndb_m0000gn/T/IconMator-CD987804-55AA-48BF-B7BB-660230FD03E7/Render-BFA69270-5A83-410E-8B2C-8873E6F13274.app/Contents/Resources/Assets.car
+/var/folders/gx/w1cq6f8j41sdgkfp0c5ndb_m0000gn/T/IconMator-CD987804-55AA-48BF-B7BB-660230FD03E7/partial.plist
+
+System request 1024px: source 1024×1024, 16 bits/component
+System request 512px: source 1024×1024, 16 bits/component
+System request 256px: source 512×512, 16 bits/component
+System request 128px: source 256×256, 16 bits/component
+System request 64px: source 128×128, 16 bits/component
+System request 32px: source 64×64, 16 bits/component
+System request 16px: source 32×32, 16 bits/component
+Packaging: independent iconutil decode and exact normalized pixel comparison passed for all ten representations
+
+--- stderr ---
+Checking input and tools
+Compiling and rendering icon
+Packaging and verifying ICNS
+Saving verified output
+
+======================================================================
+$ .build/native/debug/iconmator convert ReferenceInputs/Metadatics/Metadatics.icon .research/GenerationValidation/Metadatics-27-dark.icns --generation 27 --appearance dark --png --replace --diagnostics
+exit status: 0
+--- stdout ---
+/Users/lloyd/Developer/IconMator/.research/GenerationValidation/Metadatics-27-dark.icns
+Rendering: macOS 27; Appearance: Dark; Host: macOS 27.0.1 (26A434); Xcode 27.1
+Build version 27A9275; macOS SDK 27.0; Rendition: Dark; Backend: Icon Composer renderer + system icon presentation
+Rendering: macOS 27
+Appearance: Dark
+Rendition: Dark
+Backend: Icon Composer renderer + system icon presentation
+Host: macOS 27.0.1 (26A434); Xcode: Xcode 27.1
+Build version 27A9275; SDK: macOS 27.0
+Composer: /Applications/Xcode.app/Contents/Applications/Icon Composer.app/Contents/Executables/ictool (27.1 (129))
+Composer interface: --export-image, --rendition, --design-generation
+Generation argument: --design-generation 27
+Direct export: 1024×1024, 16 bits/component, kCGColorSpaceDisplayP3, alpha=true, toneMap=false
+Normalization: complete canvas to 8-bit sRGB premultiplied RGBA; tone mapping automatic
+Presentation: temporary legacy ICNS in a fresh application bundle; public NSWorkspace extraction supplies the current host's macOS canvas and shadow
+Final 1024 canvas: alpha>=1 x=67 y=76 w=890 h=888, alpha>=128 x=100 y=100 w=824 h=824
+Independent ICNS packaging: iconutil decode and exact normalized pixel comparison passed for all ten representations
+Renderer output: {
+
+}
+System request 1024px: source 1024×1024, 16 bits/component
+System request 512px: source 1024×1024, 16 bits/component
+System request 256px: source 512×512, 16 bits/component
+System request 128px: source 256×256, 16 bits/component
+System request 64px: source 128×128, 16 bits/component
+System request 32px: source 64×64, 16 bits/component
+System request 16px: source 32×32, 16 bits/component
+Packaging: independent iconutil decode and exact normalized pixel comparison passed for all ten representations
+
+--- stderr ---
+Checking input and tools
+Compiling and rendering icon
+Packaging and verifying ICNS
+Saving verified output
+
+======================================================================
+$ .build/native/debug/iconmator convert ReferenceInputs/Metadatics/Metadatics.icon .research/GenerationValidation/Metadatics-27-mono.icns --generation 27 --appearance mono --png --replace --diagnostics
+exit status: 0
+--- stdout ---
+/Users/lloyd/Developer/IconMator/.research/GenerationValidation/Metadatics-27-mono.icns
+Rendering: macOS 27; Appearance: Mono; Host: macOS 27.0.1 (26A434); Xcode 27.1
+Build version 27A9275; macOS SDK 27.0; Rendition: ClearLight; Backend: Icon Composer renderer + system icon presentation
+Rendering: macOS 27
+Appearance: Mono
+Rendition: ClearLight
+Backend: Icon Composer renderer + system icon presentation
+Host: macOS 27.0.1 (26A434); Xcode: Xcode 27.1
+Build version 27A9275; SDK: macOS 27.0
+Composer: /Applications/Xcode.app/Contents/Applications/Icon Composer.app/Contents/Executables/ictool (27.1 (129))
+Composer interface: --export-image, --rendition, --design-generation
+Generation argument: --design-generation 27
+Direct export: 1024×1024, 16 bits/component, kCGColorSpaceDisplayP3, alpha=true, toneMap=false
+Normalization: complete canvas to 8-bit sRGB premultiplied RGBA; tone mapping automatic
+Presentation: temporary legacy ICNS in a fresh application bundle; public NSWorkspace extraction supplies the current host's macOS canvas and shadow
+Final 1024 canvas: alpha>=1 x=67 y=76 w=890 h=888, alpha>=128 x=100 y=100 w=824 h=824
+Independent ICNS packaging: iconutil decode and exact normalized pixel comparison passed for all ten representations
+Renderer output: {
+
+}
+System request 1024px: source 1024×1024, 16 bits/component
+System request 512px: source 1024×1024, 16 bits/component
+System request 256px: source 512×512, 16 bits/component
+System request 128px: source 256×256, 16 bits/component
+System request 64px: source 128×128, 16 bits/component
+System request 32px: source 64×64, 16 bits/component
+System request 16px: source 32×32, 16 bits/component
+Packaging: independent iconutil decode and exact normalized pixel comparison passed for all ten representations
+
+--- stderr ---
+Checking input and tools
+Compiling and rendering icon
+Packaging and verifying ICNS
+Saving verified output

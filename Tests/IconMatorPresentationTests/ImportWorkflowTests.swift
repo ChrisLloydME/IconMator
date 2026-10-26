@@ -76,12 +76,15 @@ private actor PreviewRequests {
     }
 
     private func fixtureTools() throws -> DeveloperTools {
-        let json = Data("""
-        {"developerDirectory":"file:///fixture/Xcode/Contents/Developer",
-        "xcodebuild":"file:///fixture/xcodebuild","actool":"file:///fixture/actool",
-        "clang":"file:///fixture/clang","sdk":"file:///fixture/SDK","sdkVersion":"27.0",
-        "iconutil":"file:///usr/bin/iconutil","xcodeVersion":"fixture","operatingSystem":"fixture"}
-        """.utf8)
-        return try JSONDecoder().decode(DeveloperTools.self, from: json)
+        DeveloperTools(developerDirectory: URL(fileURLWithPath: "/fixture/Xcode/Contents/Developer"),
+            xcodebuild: URL(fileURLWithPath: "/fixture/xcodebuild"),
+            actool: URL(fileURLWithPath: "/fixture/actool"),
+            clang: URL(fileURLWithPath: "/fixture/clang"),
+            sdk: URL(fileURLWithPath: "/fixture/SDK"), sdkVersion: "27.0",
+            iconutil: URL(fileURLWithPath: "/usr/bin/iconutil"),
+            composerTool: URL(fileURLWithPath: "/usr/bin/true"),
+            composerInfo: ComposerToolInfo(path: "/usr/bin/true", shortVersion: "27.1", buildVersion: "129",
+                interface: ComposerInterfaceCapabilities(exportImage: true, rendition: true, designGeneration: true)),
+            xcodeVersion: "fixture", operatingSystem: "27.0.1 (26A434)")
     }
 }

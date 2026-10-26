@@ -17,6 +17,7 @@ project [README](../README.md) and [LICENSE](../LICENSE) as public entry points.
 | --- | --- |
 | [Rendering research](Research/RENDERING_RESEARCH.md) | Actual tools, evaluated approaches, measurements and backend selection |
 | [Appearance research](Research/APPEARANCE_RESEARCH.md) | Verified Default/Dark/Mono renditions, geometry and color measurements |
+| [Generation research](Research/GENERATION_RESEARCH.md) | macOS 26/27 generation selection, routing, measurements and limitations |
 | [Validation report](Research/VALIDATION_REPORT.md) | Build/test results, reference differences and unverified acceptance items |
 | [Tool/build logs](Research/Logs/) | Recorded compiler, renderer, signature and test output |
 | [Comparison metrics](Research/Comparisons/) | Whole-canvas image-comparison JSON reports |

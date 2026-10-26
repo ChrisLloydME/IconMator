@@ -1,0 +1,159 @@
+warning: /Users/lloyd/Library/org.swift.swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /Users/lloyd/Library/org.swift.swiftpm/security is not accessible or not writable, disabling user-level cache features.
+warning: /Users/lloyd/Library/Caches/org.swift.swiftpm is not accessible or not writable, disabling user-level cache features.
+warning: 'iconmator': failed storing manifest for 'iconmator' in cache: attempt to write a readonly database
+Building for debugging...
+[Starting]
+Build complete! (0.36 sec)
+Test Suite 'All tests' started at 2026-10-26 14:46:32.972.
+Test Suite 'All tests' passed at 2026-10-26 14:46:32.973.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'All tests' started at 2026-10-26 14:46:33.062.
+Test Suite 'All tests' passed at 2026-10-26 14:46:33.063.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite ImportWorkflowTests started.
+􀟈  Suite PresentationTests started.
+􀟈  Suite RenderingPresentationTests started.
+􀟈  Test newImportIsSelectedAndAutomaticallyRequestsItsPreview() started.
+􀟈  Test sandboxedBuildDoesNotStartToolExecution() started.
+􀟈  Test invalidImportsHaveUnderstandableErrors() started.
+􀟈  Test batchNamesDoNotCollideOnCaseInsensitiveVolumes() started.
+􀟈  Test duplicateImportSelectsExistingJobWithoutAddingAnother() started.
+􀟈  Test rapidGenerationAndAppearanceChangesKeepOnlyTheLatestResult() started.
+􀟈  Test pickerAcceptsDirectoryDocumentsAndKeepsFoldersNavigable() started.
+􀟈  Test importingDeduplicatesAndRemovalKeepsSelectionValid() started.
+􀟈  Test pickerRejectsMalformedIconDirectories() started.
+􀟈  Test toolIdentityChangeInvalidatesPreviewAndRejectsLateResult() started.
+􀟈  Test unavailableCombinationsDisableConversionWithSpecificReasons() started.
+􀟈  Test batchUsesCapturedOptionsWhileControlsCannotChange() started.
+􀟈  Test thumbnailOptionChecksUseTheSameCompleteRequest() started.
+􀟈  Test generationChangeRequestsNewPreviewAndLateResultCannotOverwrite() started.
+􀟈  Test conversionUsesCapturedOptionsAndOptionChangeClearsOutput() started.
+􁁛  Test unavailableCombinationsDisableConversionWithSpecificReasons() passed after 0.009 seconds.
+􁁛  Test invalidImportsHaveUnderstandableErrors() passed after 0.015 seconds.
+􁁛  Test batchNamesDoNotCollideOnCaseInsensitiveVolumes() passed after 0.015 seconds.
+􁁛  Test pickerAcceptsDirectoryDocumentsAndKeepsFoldersNavigable() passed after 0.015 seconds.
+􁁛  Test sandboxedBuildDoesNotStartToolExecution() passed after 0.016 seconds.
+􁁛  Test pickerRejectsMalformedIconDirectories() passed after 0.015 seconds.
+􁁛  Test importingDeduplicatesAndRemovalKeepsSelectionValid() passed after 0.016 seconds.
+􁁛  Suite PresentationTests passed after 0.016 seconds.
+􁁛  Test duplicateImportSelectsExistingJobWithoutAddingAnother() passed after 0.016 seconds.
+􁁛  Test conversionUsesCapturedOptionsAndOptionChangeClearsOutput() passed after 0.017 seconds.
+􁁛  Test newImportIsSelectedAndAutomaticallyRequestsItsPreview() passed after 0.017 seconds.
+􁁛  Suite ImportWorkflowTests passed after 0.017 seconds.
+􁁛  Test batchUsesCapturedOptionsWhileControlsCannotChange() passed after 0.018 seconds.
+􁁛  Test rapidGenerationAndAppearanceChangesKeepOnlyTheLatestResult() passed after 0.018 seconds.
+􁁛  Test thumbnailOptionChecksUseTheSameCompleteRequest() passed after 0.019 seconds.
+􁁛  Test generationChangeRequestsNewPreviewAndLateResultCannotOverwrite() passed after 0.019 seconds.
+􁁛  Test toolIdentityChangeInvalidatesPreviewAndRejectsLateResult() passed after 0.020 seconds.
+􁁛  Suite RenderingPresentationTests passed after 0.020 seconds.
+􁁛  Test run with 15 tests in 3 suites passed after 0.020 seconds.
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite ImageAnalysisTests started.
+􀟈  Suite RenderingOptionsTests started.
+􀟈  Suite ToolDiscoveryTests started.
+􀟈  Suite EngineTests started.
+􀟈  Suite AppleIntegrationTests started.
+􀟈  Test fullCanvasAlphaAndGeometry() started.
+􀟈  Test cliRejectsMalformedGenerationArguments() started.
+􀟈  Test compiledBackendRejectsGenerationsItCannotRepresent() started.
+􀟈  Test doesNotHideCanvasChangesByCropping() started.
+􀟈  Test omittedGenerationAndAppearancePreserveDefaults() started.
+􀟈  Test appearancesUseTheVerifiedRenditions() started.
+􀟈  Test routerCoversAllSixCombinations() started.
+􀟈  Test composerInterfaceParserIsNarrowAndFormattingTolerant() started.
+􀟈  Test missingComposerNeverFallsBackForGenerationOrAppearance() started.
+􀟈  Test packagePNGDoesNotAcceptRenderingOptions() started.
+􀟈  Test generationValuesAndDefaultsAreStable() started.
+􀟈  Test composerInspectionReadsVersionAndHelp() started.
+􀟈  Test cliParsesAllSixGenerationAppearanceCombinations() started.
+􀟈  Test rendererArgumentsIncludeExplicitGenerationAndRendition() started.
+􀟈  Test routerDoesNotAssumeUnknownOrFutureHostsMatchMacOS27() started.
+􀟈  Test composerBackendRejectsMissingGenerationInterfaceBeforeRendering() started.
+􀟈  Test toolIdentityIncludesComposerVersionAndInterface() started.
+􀟈  Test capabilitiesDistinguishCompiledComposerAndGenerationSelection() started.
+􀟈  Test detectsAlphaDifferences() started.
+􀟈  Test smallMasterIsNeverUpscaled() started.
+􀟈  Test installedToolsAndReferenceRoundTrip() started.
+􀟈  Test directComposerGenerationsAreGenuinelyDifferent() started.
+􀟈  Test realRenderingBatchCancellationAndInputPreservation() started.
+􀟈  Test processDiagnosticsAndFailureArePropagated() started.
+􀟈  Test atomicPublisherRefusesCollisionAndSupportsApprovedReplacement() started.
+􀟈  Test processTimeoutTerminatesTool() started.
+􀟈  Test renderGenerationMatrixPreservesCanvasPackagingAndInputs() started.
+􀟈  Test temporaryWorkspacesAreIsolatedAndCleaned() started.
+􀟈  Test invalidInputAndSymlinksAreRejected() started.
+􀟈  Test processArgumentsAreNotInterpretedByShell() started.
+􀟈  Test unsupportedOrMissingToolchainFailsClearly() started.
+􀟈  Test publisherPreparesAllOutputsBeforeChangingAny() started.
+􀟈  Test processCanBeCancelled() started.
+􀟈  Test sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test discoversRelocatedXcodeAndHonorsAppOverride(useOverride:) started.
+􀟈  Test commandLineToolsDirectoryIsNotAcceptedAsFullXcode() started.
+􁁛  Test omittedGenerationAndAppearancePreserveDefaults() passed after 0.002 seconds.
+􁁛  Test appearancesUseTheVerifiedRenditions() passed after 0.002 seconds.
+􁁛  Test packagePNGDoesNotAcceptRenderingOptions() passed after 0.003 seconds.
+􁁛  Test generationValuesAndDefaultsAreStable() passed after 0.005 seconds.
+􁁛  Test cliRejectsMalformedGenerationArguments() passed after 0.005 seconds.
+􀟈  Test case passing 1 argument version → "27" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "27.0" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "27.1" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "27.9.3" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "27.0 beta 1" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "27.1Beta2" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "27.0b3" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "27.0-beta.4" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "27.0 RC 1" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "26.0 beta 1" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "28.0beta2" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "26.4" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "28.0" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "270.0" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "unknown" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "27.x" to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument version → "27." to sdkFamilyPolicyUsesReportedVersion(version:) started.
+􀟈  Test case passing 1 argument useOverride → false to discoversRelocatedXcodeAndHonorsAppOverride(useOverride:) started.
+􀟈  Test case passing 1 argument useOverride → true to discoversRelocatedXcodeAndHonorsAppOverride(useOverride:) started.
+􁁛  Test cliParsesAllSixGenerationAppearanceCombinations() passed after 0.036 seconds.
+􁁛  Test rendererArgumentsIncludeExplicitGenerationAndRendition() passed after 0.037 seconds.
+􁁛  Test routerCoversAllSixCombinations() passed after 0.037 seconds.
+􁁛  Test missingComposerNeverFallsBackForGenerationOrAppearance() passed after 0.037 seconds.
+􁁛  Test toolIdentityIncludesComposerVersionAndInterface() passed after 0.037 seconds.
+􁁛  Test compiledBackendRejectsGenerationsItCannotRepresent() passed after 0.037 seconds.
+􁁛  Test capabilitiesDistinguishCompiledComposerAndGenerationSelection() passed after 0.037 seconds.
+􁁛  Test routerDoesNotAssumeUnknownOrFutureHostsMatchMacOS27() passed after 0.037 seconds.
+􁁛  Test composerInspectionReadsVersionAndHelp() passed after 0.037 seconds.
+􁁛  Test composerBackendRejectsMissingGenerationInterfaceBeforeRendering() passed after 0.037 seconds.
+􁁛  Test composerInterfaceParserIsNarrowAndFormattingTolerant() passed after 0.037 seconds.
+􁁛  Test temporaryWorkspacesAreIsolatedAndCleaned() passed after 0.037 seconds.
+􁁛  Test unsupportedOrMissingToolchainFailsClearly() passed after 0.037 seconds.
+􁁛  Test invalidInputAndSymlinksAreRejected() passed after 0.037 seconds.
+􁁛  Test atomicPublisherRefusesCollisionAndSupportsApprovedReplacement() passed after 0.037 seconds.
+􁁛  Test publisherPreparesAllOutputsBeforeChangingAny() passed after 0.037 seconds.
+􁁛  Test smallMasterIsNeverUpscaled() passed after 0.037 seconds.
+􁁛  Test doesNotHideCanvasChangesByCropping() passed after 0.038 seconds.
+􁁛  Test detectsAlphaDifferences() passed after 0.038 seconds.
+􁁛  Test fullCanvasAlphaAndGeometry() passed after 0.038 seconds.
+􁁛  Test commandLineToolsDirectoryIsNotAcceptedAsFullXcode() passed after 0.037 seconds.
+􁁛  Test processDiagnosticsAndFailureArePropagated() passed after 0.037 seconds.
+􁁛  Test processArgumentsAreNotInterpretedByShell() passed after 0.037 seconds.
+􁁛  Suite ImageAnalysisTests passed after 0.038 seconds.
+􁁛  Suite RenderingOptionsTests passed after 0.039 seconds.
+􁁛  Test discoversRelocatedXcodeAndHonorsAppOverride(useOverride:) with 2 test cases passed after 0.040 seconds.
+􁁛  Test sdkFamilyPolicyUsesReportedVersion(version:) with 18 test cases passed after 0.040 seconds.
+􁁛  Suite ToolDiscoveryTests passed after 0.041 seconds.
+􁁛  Test processTimeoutTerminatesTool() passed after 0.063 seconds.
+􁁛  Test processCanBeCancelled() passed after 0.108 seconds.
+􁁛  Suite EngineTests passed after 0.109 seconds.
+􁁛  Test directComposerGenerationsAreGenuinelyDifferent() passed after 3.449 seconds.
+􁁛  Test installedToolsAndReferenceRoundTrip() passed after 7.795 seconds.
+􁁛  Test realRenderingBatchCancellationAndInputPreservation() passed after 17.635 seconds.
+􁁛  Test renderGenerationMatrixPreservesCanvasPackagingAndInputs() passed after 195.642 seconds.
+􁁛  Suite AppleIntegrationTests passed after 195.644 seconds.
+􁁛  Test run with 36 tests in 5 suites passed after 195.644 seconds.

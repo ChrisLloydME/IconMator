@@ -1,0 +1,52 @@
+{
+  "alphaMeanAbsoluteError" : 0,
+  "candidate" : {
+    "height" : 1024,
+    "opaquePixels" : 636281,
+    "solidBounds" : {
+      "height" : 824,
+      "width" : 824,
+      "x" : 100,
+      "y" : 100
+    },
+    "sourceBitsPerComponent" : 8,
+    "sourceColorSpace" : "kCGColorSpaceSRGB",
+    "sourceHasAlpha" : true,
+    "transparentPixels" : 312480,
+    "visibleBounds" : {
+      "height" : 888,
+      "width" : 890,
+      "x" : 67,
+      "y" : 76
+    },
+    "width" : 1024
+  },
+  "classification" : "Different; visual review required, fidelity not established",
+  "differentPixels" : 614851,
+  "maximumAlphaDifference" : 0,
+  "maximumChannelDifference" : 162,
+  "normalization" : "Full-canvas 8-bit sRGB premultiplied RGBA via CoreGraphics; source files preserved. Color\/profile\/quantization differences may be removed or introduced. Bounds use alpha >= 1 and >= 128; y follows bitmap row order.",
+  "normalizedExactMatch" : false,
+  "reference" : {
+    "height" : 1024,
+    "opaquePixels" : 636281,
+    "solidBounds" : {
+      "height" : 824,
+      "width" : 824,
+      "x" : 100,
+      "y" : 100
+    },
+    "sourceBitsPerComponent" : 8,
+    "sourceColorSpace" : "kCGColorSpaceSRGB",
+    "sourceHasAlpha" : true,
+    "transparentPixels" : 312480,
+    "visibleBounds" : {
+      "height" : 888,
+      "width" : 890,
+      "x" : 67,
+      "y" : 76
+    },
+    "width" : 1024
+  },
+  "rgbaMeanAbsoluteError" : 5.686609268188477
+}

@@ -91,7 +91,7 @@ struct ContentView: View {
     }
 
     @ViewBuilder private func selectedPreview(_ job: ConversionJob) -> some View {
-        if let data = job.preview, job.previewAppearance == model.appearance, let image = NSImage(data: data) {
+        if let data = job.preview, job.previewOptions == model.renderOptions, let image = NSImage(data: data) {
             Image(nsImage: image).resizable().interpolation(.high).scaledToFit()
                 .frame(maxWidth: 280, maxHeight: 280)
                 .accessibilityLabel("Rendered \(model.appearance.displayName) preview of \(job.input.lastPathComponent)")
@@ -116,7 +116,7 @@ struct ContentView: View {
                     ForEach(model.jobs) { job in
                         Button { model.selection = job.id } label: {
                             VStack(spacing: 4) {
-                                if let data = job.preview, job.previewAppearance == model.appearance, let image = NSImage(data: data) {
+                                if let data = job.preview, job.previewOptions == model.renderOptions, let image = NSImage(data: data) {
                                     Image(nsImage: image).resizable().scaledToFit().frame(width: 40, height: 40)
                                 } else {
                                     Image(systemName: "app").font(.title).foregroundStyle(.secondary)
@@ -160,7 +160,25 @@ struct ContentView: View {
                 Toggle("Include PNG", isOn: $model.exportPNG)
                     .help("Export the same transparent 1024 × 1024 master used by the ICNS.")
                 Spacer()
+            }
+            HStack(spacing: 10) {
+                Text("Rendering").font(.caption).foregroundStyle(.secondary)
+                    .frame(width: 76, alignment: .trailing)
+                Picker("Rendering", selection: $model.generation) {
+                    ForEach(IconDesignGeneration.allCases, id: \.rawValue) { generation in
+                        Text(generation.displayName).tag(generation)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .frame(width: 190)
+                .help("Applies to the preview, PNG, and ICNS. macOS 26 uses the selected Xcode's Icon Composer renderer; the active macOS SDK remains 27.x.")
+                .accessibilityLabel("Rendering generation")
+                Spacer()
+            }
+            HStack(spacing: 10) {
                 Text("Appearance").font(.caption).foregroundStyle(.secondary)
+                    .frame(width: 76, alignment: .trailing)
                 Picker("Appearance", selection: $model.appearance) {
                     ForEach(IconAppearance.allCases, id: \.rawValue) { appearance in
                         Text(appearance.displayName).tag(appearance)
@@ -169,10 +187,11 @@ struct ContentView: View {
                 .pickerStyle(.segmented)
                 .labelsHidden()
                 .frame(width: 190)
-                .help("Applies to the preview, PNG, and ICNS. Dark and Mono use Apple's Icon Composer renditions.")
+                .help("Applies independently of rendering generation. Dark and Mono use Apple's verified Icon Composer renditions.")
                 .accessibilityLabel("Icon appearance")
+                Spacer()
             }
-            if let issue = model.appearanceIssue {
+            if let issue = model.renderIssue {
                 Text(issue).font(.caption).foregroundStyle(.red)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -240,15 +259,17 @@ struct ContentView: View {
             Text("Diagnostics").font(.headline)
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
+                    Text("Rendering: \(model.renderOptions.generation.displayName)")
+                    Text("Appearance: \(model.renderOptions.appearance.displayName)")
                     Text(model.toolStatus)
                     if let issue = model.toolIssue { Text(issue).foregroundStyle(.red) }
-                    if let capabilities = model.appearanceCapabilities {
-                        ForEach(capabilities.appearances, id: \.appearance.rawValue) { capability in
-                            Text("\(capability.appearance.displayName): \(capability.isSupported ? "available" : "unavailable") · \(capability.backend) · \(capability.rendition ?? "—")\(capability.reason.map { "\n\($0)" } ?? "")")
+                    if let capabilities = model.renderCapabilities {
+                        ForEach(capabilities.capabilities, id: \.options) { capability in
+                            Text("\(capability.generation.displayName) · \(capability.appearance.displayName): \(capability.isSupported ? "available" : "unavailable") · \(capability.backend) · \(capability.rendition ?? "—")\(capability.reason.map { "\n\($0)" } ?? "")")
                                 .foregroundStyle(capability.isSupported ? Color.secondary : Color.red)
                         }
                     }
-                    Text("Default keeps the measured compiled-asset pipeline. Dark and Mono use verified Icon Composer renditions presented through the system icon canvas. No independent Finder reference is available for every Dark/Mono source, and interactive visual acceptance was not performed.")
+                    Text("Rendering selects the material generation requested from Icon Composer. The final static image is presented by the current macOS host, so Finder-level presentation can still follow the host. macOS 27 + Default keeps the measured compiled-asset path on a macOS 27 host; macOS 26 and Dark/Mono use explicit Icon Composer renditions. No independent Finder reference is available for every source, and interactive visual acceptance was not performed.")
                         .foregroundStyle(.secondary)
                     if let job = model.selectedJob {
                         if let error = job.error { Text(error) }
