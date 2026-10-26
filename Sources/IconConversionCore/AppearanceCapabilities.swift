@@ -82,7 +82,7 @@ public struct AppearanceCapabilities: Codable, Sendable, Equatable {
         let info = (try? await ComposerToolInfo.load(tools: tools, runner: runner)) ?? nil
         let unavailableReason: String?
         if tools.composerTool == nil {
-            unavailableReason = "The Icon Composer renderer was not found in the selected Xcode. Dark and Mono require the renderer bundled with the researched Xcode version."
+            unavailableReason = "The Icon Composer renderer was not found in the selected Xcode. Dark and Mono require the renderer bundled with the selected Xcode."
         } else if !FileManager.default.isExecutableFile(atPath: tools.composerTool!.path) {
             unavailableReason = "The Icon Composer renderer is not executable: \(tools.composerTool!.path)"
         } else if info == nil {

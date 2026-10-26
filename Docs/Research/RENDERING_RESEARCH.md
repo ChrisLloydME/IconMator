@@ -113,7 +113,7 @@ Experiments retained under `Docs/Research/Comparisons/Packaging-*` demonstrate t
 
 ### Scope and remaining acceptance
 
-The feasibility gate for implementing the small UI is satisfied by a working, independently decoded real conversion. This is an **experimental local utility**, not a claim of completed visual acceptance. Runtime support is deliberately restricted to the exact researched combination (macOS 27.0.1 build 26A434, Xcode 27.1 build 27A9275). The app can target macOS 26, but unvalidated conversion environments are disabled. No 26/27 generation selector is offered. Dark and Mono now use separately verified Icon Composer renditions; see the [appearance research](APPEARANCE_RESEARCH.md).
+The feasibility gate for implementing the small UI is satisfied by a working, independently decoded real conversion. This is an **experimental local utility**, not a claim of completed visual acceptance. These measurements cover macOS 27.0.1 build 26A434 with Xcode 27.1 build 27A9275. The current compatibility policy accepts macOS SDK 27.x without exact host/Xcode build restrictions; other environments have not received equivalent fidelity measurements. No 26/27 generation selector is offered. Dark and Mono now use separately verified Icon Composer renditions; see the [appearance research](APPEARANCE_RESEARCH.md).
 
 Multiple local sources are structural controls, but only one Finder reference is available. Transparent backgrounds, additional boundary geometries and stronger refraction need reference fixtures. Finder custom-icon display and visual review at multiple scales remain unperformed under the no-GUI verification instruction. The output is a static snapshot; editable layers and runtime material behavior are not preserved.
 

@@ -4,9 +4,12 @@ Run all commands from the repository root.
 
 ## Requirements and Tool Selection
 
-The currently validated conversion environment is macOS 27.0.1 (26A434) with
-Xcode 27.1 (27A9275), including its SDK and bundled Icon Composer. The application
-target is macOS 26.0+, but unvalidated rendering environments are rejected.
+Conversion accepts the selected Xcode’s active macOS SDK when its reported major
+version is 27 (including beta and RC SDKs), using `xcrun --sdk macosx --show-sdk-version`. Exact Xcode and host
+builds are not restricted; the app deployment target remains macOS 26.0+.
+Missing tools, unsupported SDK families and invalid outputs are still rejected.
+The measured rendering environment remains macOS 27.0.1 (26A434) with Xcode 27.1
+(27A9275); other SDK 27 environments are allowed but not individually certified.
 
 Tool discovery honors `DEVELOPER_DIR`, otherwise uses `xcode-select -p`. It resolves
 installed tools and the SDK through xcrun rather than hardcoding an Xcode location.

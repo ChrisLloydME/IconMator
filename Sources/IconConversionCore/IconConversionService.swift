@@ -77,15 +77,16 @@ public struct IconConversionService: IconConversionPerforming, Sendable {
         try tools.validatePinnedTools()
         let current = try await DeveloperToolLocator(runner: runner).locate()
         guard current.developerDirectory == tools.developerDirectory, current.xcodeVersion == tools.xcodeVersion,
-              current.operatingSystem == tools.operatingSystem else {
-            throw ConversionError.unsupportedTool("The selected Xcode or operating system changed. Recheck developer tools before converting.")
+              current.operatingSystem == tools.operatingSystem, current.sdk == tools.sdk,
+              current.sdkVersion == tools.sdkVersion else {
+            throw ConversionError.unsupportedTool("The selected Xcode, macOS SDK or operating system changed. Recheck developer tools before converting.")
         }
         if appearance != .default {
             guard current.composerTool == tools.composerTool, current.composerTool != nil else {
                 throw ConversionError.missingTool("The selected Icon Composer renderer changed. Recheck developer tools before converting Dark or Mono.")
             }
         }
-        try tools.requireResearchedEnvironment()
+        try tools.requireSupportedSDK()
         let outputs = [destination] + (exportPNG ? [destination.deletingPathExtension().appendingPathExtension("png")] : [])
         if !overwrite, let existing = outputs.first(where: { FileManager.default.fileExists(atPath: $0.path) }) {
             throw ConversionError.collision(existing.path)
@@ -103,7 +104,7 @@ public struct IconConversionService: IconConversionPerforming, Sendable {
         try OutputPublisher.publish(files: [(icns, destination)] + (exportPNG ? [(rendered.masterPNG, outputs[1])] : []), overwrite: overwrite)
         let diagnostics = rendered.diagnostics + "Packaging: independent iconutil decode and exact normalized pixel comparison passed for all ten representations\n"
         return ConversionResult(icns: destination, png: exportPNG ? outputs[1] : nil,
-            environment: "macOS \(tools.operatingSystem); \(tools.xcodeVersion.trimmingCharacters(in: .whitespacesAndNewlines)); Appearance: \(appearance.displayName); Rendition: \(rendered.rendition); \(rendered.backend)",
+            environment: "macOS \(tools.operatingSystem); \(tools.xcodeVersion.trimmingCharacters(in: .whitespacesAndNewlines)); macOS SDK \(tools.sdkVersion); Appearance: \(appearance.displayName); Rendition: \(rendered.rendition); \(rendered.backend)",
             diagnostics: diagnostics, previewPNG: previewPNG,
             appearance: appearance, rendition: rendered.rendition, backend: rendered.backend)
     }
@@ -114,7 +115,8 @@ public struct IconConversionService: IconConversionPerforming, Sendable {
         try tools.validatePinnedTools()
         let current = try await DeveloperToolLocator(runner: runner).locate()
         guard current.developerDirectory == tools.developerDirectory, current.xcodeVersion == tools.xcodeVersion,
-              current.operatingSystem == tools.operatingSystem else {
+              current.operatingSystem == tools.operatingSystem, current.sdk == tools.sdk,
+              current.sdkVersion == tools.sdkVersion else {
             throw ConversionError.unsupportedTool("The selected developer tools changed. Recheck developer tools.")
         }
         if appearance != .default {
@@ -122,7 +124,7 @@ public struct IconConversionService: IconConversionPerforming, Sendable {
                 throw ConversionError.missingTool("The selected Icon Composer renderer changed. Recheck developer tools before previewing Dark or Mono.")
             }
         }
-        try tools.requireResearchedEnvironment()
+        try tools.requireSupportedSDK()
         let workspace = try TemporaryWorkspace()
         defer { workspace.cleanUp() }
         let rendered = try await backend.render(input: input, appearance: appearance, workspace: workspace.url, tools: tools)

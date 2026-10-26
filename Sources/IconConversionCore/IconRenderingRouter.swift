@@ -18,7 +18,7 @@ public struct IconRenderingRouter: IconRenderingBackend {
             return try await compiled.render(input: input, appearance: appearance, workspace: workspace, tools: tools)
         case .dark, .mono:
             guard tools.composerTool != nil else {
-                throw ConversionError.missingTool("The Icon Composer renderer was not found in the selected Xcode. Dark and Mono require the renderer bundled with Xcode 27.1.")
+                throw ConversionError.missingTool("The Icon Composer renderer was not found in the selected Xcode. Dark and Mono require the renderer bundled with the selected Xcode.")
             }
             return try await composer.render(input: input, appearance: appearance, workspace: workspace, tools: tools)
         }

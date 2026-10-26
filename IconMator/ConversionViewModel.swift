@@ -99,12 +99,13 @@ final class ConversionViewModel {
             do {
                 let found = try await DeveloperToolLocator().locate()
                 try Task.checkCancellation()
-                try found.requireResearchedEnvironment()
+                try found.requireSupportedSDK()
                 let capabilities = await AppearanceCapabilities.probe(tools: found)
                 try Task.checkCancellation()
                 tools = found
                 appearanceCapabilities = capabilities
                 var status = "macOS \(found.operatingSystem) · \(found.xcodeVersion.components(separatedBy: .newlines).first ?? "Xcode")"
+                status += " · macOS SDK \(found.sdkVersion)"
                 if let composer = capabilities.composerTool {
                     status += " · Icon Composer \(composer.displayVersion)"
                 } else if found.composerTool != nil {

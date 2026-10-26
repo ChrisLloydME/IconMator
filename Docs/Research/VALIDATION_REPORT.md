@@ -4,6 +4,27 @@ Date: 2026-10-26. Host: macOS 27.0.1 (26A434), Xcode 27.1 (27A9275), arm64.
 
 Status: conversion engine and frontend implementation exist and compile. Default, Dark and Mono have real-output validation; **full product acceptance remains open**. The user explicitly authorized local non-sandboxed app builds; both configurations have been rebuilt and ad-hoc signed. This report does not claim interactive GUI, Finder display or independent Dark/Mono Finder-reference testing.
 
+## SDK 27 compatibility policy update
+
+The exact host/Xcode build gate has been replaced with a check of the selected
+macOS SDK's reported major version: all 27.x releases, including Beta and RC, are allowed. Xcode selection
+still follows DEVELOPER_DIR or xcode-select; no installation scanning was added.
+The historical measurements below remain tied to the stated host. References to
+an exact environment gate in the earlier research describe the previous policy,
+not the current runtime restriction. Structural checks remain enabled and do not
+automatically establish visual fidelity on untested toolchains.
+
+The maintainer has accepted the current output's visual appearance. This is
+user-provided visual acceptance, not GUI inspection performed by an agent.
+
+SDK-policy verification: the full 39-test suite (12 presentation + 27 core,
+including real Apple-tool integration) passed on the recorded host. After adding
+explicit Beta/RC suffix recognition, non-GUI tests passed again, including 18 SDK
+version boundary cases and a different Xcode Beta/OS fixture. Debug and Release
+application builds passed. Only SDK 27.0 was installed for real rendering; other
+27.x and prerelease versions were policy tests, not real toolchain executions.
+
+
 ## Executed checks
 
 | Check | Result | Evidence |
@@ -34,7 +55,7 @@ Status: conversion engine and frontend implementation exist and compile. Default
 | UI layout/flow source review | Reviewed | ContentView.swift, ConversionViewModel.swift and IconImportPanel.swift |
 | Finder custom-icon visual display, multi-scale visual review | NOT PERFORMED | No GUI verification per instruction |
 | Independent Finder Dark/Mono reference | NOT AVAILABLE | Appearance-specific system renderer used as the measurement reference |
-| macOS 26 runtime, other Xcode/host builds, generation selection | NOT VALIDATED; unavailable | Exact environment gate |
+| macOS 26 runtime, other Xcode/host builds, generation selection | Other SDK 27 environments allowed but not individually validated; generation selection unavailable | SDK-family gate |
 | Actual local app entitlements and Hardened Runtime | App Sandbox absent; `ENABLE_HARDENED_RUNTIME=YES`; Release signature has runtime flag. Debug ad-hoc signing reports hardened runtime disabled, as Xcode emitted during the build. | Built Info.plists, build settings, `codesign` output |
 | Sandboxed app execution, Developer ID/notarization/distribution | NOT VALIDATED | Explicit scope limitation |
 
@@ -106,7 +127,7 @@ not performed under the no-GUI instruction.
 
 ## Dataset and scope gaps
 
-Metadatics supplies three translucent layers, a P3 gradient, shadows and boundary detail. Tunes, AudioMator and SwiftBiomes are additional real structural/round-trip controls, but lack Finder-reference PNGs. They do not establish fidelity across all requested categories. Transparent/partial backgrounds, stronger refraction and alternate edge geometries still need explicit paired references. The supported host/toolchain is intentionally narrow pending that evidence.
+Metadatics supplies three translucent layers, a P3 gradient, shadows and boundary detail. Tunes, AudioMator and SwiftBiomes are additional real structural/round-trip controls, but lack Finder-reference PNGs. They do not establish fidelity across all requested categories. Transparent/partial backgrounds, stronger refraction and alternate edge geometries still need explicit paired references. Only the recorded host/toolchain has measured fidelity evidence; the runtime policy now allows the macOS SDK 27 family.
 
 ## Acceptance tracking
 

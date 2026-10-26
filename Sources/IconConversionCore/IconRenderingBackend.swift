@@ -33,7 +33,7 @@ public struct CompiledAssetBackend: IconRenderingBackend {
         guard appearance == .default else {
             throw ConversionError.validation("The compiled-asset backend only renders the Default appearance.")
         }
-        try tools.requireResearchedEnvironment()
+        try tools.requireSupportedSDK()
         let fm = FileManager.default
         let snapshot = workspace.appendingPathComponent("AppIcon.icon")
         try fm.copyItem(at: input, to: snapshot)

@@ -80,10 +80,10 @@ struct EngineTests {
 
     @Test func unsupportedOrMissingToolchainFailsClearly() throws {
         let missing = DeveloperTools(developerDirectory: URL(fileURLWithPath: "/missing-xcode"), xcodebuild: URL(fileURLWithPath: "/missing-build"),
-            actool: URL(fileURLWithPath: "/missing-actool"), clang: URL(fileURLWithPath: "/missing-clang"), sdk: URL(fileURLWithPath: "/missing-sdk"), iconutil: URL(fileURLWithPath: "/usr/bin/iconutil"),
+            actool: URL(fileURLWithPath: "/missing-actool"), clang: URL(fileURLWithPath: "/missing-clang"), sdk: URL(fileURLWithPath: "/missing-sdk"), sdkVersion: "26.0", iconutil: URL(fileURLWithPath: "/usr/bin/iconutil"),
             composerTool: nil, xcodeVersion: "Xcode 26", operatingSystem: "26.0")
         #expect(throws: ConversionError.self) { try missing.validatePinnedTools() }
-        #expect(throws: ConversionError.self) { try missing.requireResearchedEnvironment() }
+        #expect(throws: ConversionError.self) { try missing.requireSupportedSDK() }
     }
 
     @Test func smallMasterIsNeverUpscaled() async throws {

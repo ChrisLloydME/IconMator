@@ -79,7 +79,7 @@ private actor PreviewRequests {
         let json = Data("""
         {"developerDirectory":"file:///fixture/Xcode/Contents/Developer",
         "xcodebuild":"file:///fixture/xcodebuild","actool":"file:///fixture/actool",
-        "clang":"file:///fixture/clang","sdk":"file:///fixture/SDK",
+        "clang":"file:///fixture/clang","sdk":"file:///fixture/SDK","sdkVersion":"27.0",
         "iconutil":"file:///usr/bin/iconutil","xcodeVersion":"fixture","operatingSystem":"fixture"}
         """.utf8)
         return try JSONDecoder().decode(DeveloperTools.self, from: json)

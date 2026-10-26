@@ -200,8 +200,8 @@ a separate, explicit choice rather than an implicit fallback.
 - Interactive visual acceptance and Finder display were not performed, per the
   no-GUI verification instruction.
 - The direct renderer's legacy ICNS presentation was measured on macOS 27.0.1 with
-  Xcode 27.1. Other OS/Xcode combinations remain outside the existing environment
-  gate.
+  Xcode 27.1. The current policy allows other OS/Xcode combinations when the
+  selected macOS SDK is 27.x; those combinations remain unmeasured here.
 - The research reference probe uses a private framework and is not part of the
   application or test suite. It is retained only as local `.research/` evidence.
 

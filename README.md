@@ -30,7 +30,9 @@ Conversion runs locally, without network access or third-party package dependenc
 
 ## Requirements and Status
 
-Conversion is currently enabled only on **macOS 27.0.1 (26A434) with Xcode 27.1 (27A9275)**. Other environments and macOS-generation choices remain disabled until validated. Default, Dark, and Mono use verified Apple renditions; Dark and Mono require the Icon Composer renderer bundled with the selected Xcode.
+Conversion requires **a full Xcode installation with an active macOS SDK in the 27.x family (including Beta and RC)**, on macOS 26 or later. Exact Xcode and macOS build numbers are not restricted. Dark and Mono additionally require the selected Xcode’s bundled Icon Composer renderer. macOS-generation selection is not offered.
+
+Rendering was measured on macOS 27.0.1 (26A434) with Xcode 27.1 (27A9275). Allowing the SDK 27 family is a compatibility policy, not a claim that every combination has been tested. Tool failures and invalid output are still rejected.
 
 Rendering is numerically close to the supplied Finder reference, but is not pixel-identical. See the [validation report](Docs/Research/VALIDATION_REPORT.md) for measurements and remaining checks. The app targets macOS 26+, but that deployment target does not imply validated conversion on every supported OS.
 

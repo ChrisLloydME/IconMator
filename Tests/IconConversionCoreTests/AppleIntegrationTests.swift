@@ -6,7 +6,7 @@ import Testing
 struct AppleIntegrationTests {
     @Test func installedToolsAndReferenceRoundTrip() async throws {
         let tools = try await DeveloperToolLocator().locate()
-        try tools.requireResearchedEnvironment()
+        try tools.requireSupportedSDK()
         let workspace = try TemporaryWorkspace(); defer { workspace.cleanUp() }
         let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
         let reference = root.appendingPathComponent("ReferenceInputs/Metadatics/Metadatics.png")
@@ -54,7 +54,7 @@ struct AppleIntegrationTests {
 
     @Test func appearanceMatrixPreservesCanvasPackagingAndInputs() async throws {
         let tools = try await DeveloperToolLocator().locate()
-        try tools.requireResearchedEnvironment()
+        try tools.requireSupportedSDK()
         _ = try #require(tools.composerTool)
         let workspace = try TemporaryWorkspace(); defer { workspace.cleanUp() }
         let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()

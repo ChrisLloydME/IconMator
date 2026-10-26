@@ -14,9 +14,9 @@ public struct ComposerRenderingBackend: IconRenderingBackend {
         guard appearance != .default else {
             throw ConversionError.validation("The Composer backend is not used for the Default appearance.")
         }
-        try tools.requireResearchedEnvironment()
+        try tools.requireSupportedSDK()
         guard let composer = tools.composerTool else {
-            throw ConversionError.missingTool("The Icon Composer renderer was not found in the selected Xcode. Dark and Mono require the renderer bundled with Xcode 27.1.")
+            throw ConversionError.missingTool("The Icon Composer renderer was not found in the selected Xcode. Dark and Mono require the renderer bundled with the selected Xcode.")
         }
         guard FileManager.default.isExecutableFile(atPath: composer.path) else {
             throw ConversionError.missingTool("The Icon Composer renderer is not executable: \(composer.path)")

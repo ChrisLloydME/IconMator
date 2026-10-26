@@ -37,7 +37,7 @@ private func fixtureTools(composer: URL?) -> DeveloperTools {
         xcodebuild: URL(fileURLWithPath: "/fixture/xcodebuild"),
         actool: URL(fileURLWithPath: "/fixture/actool"),
         clang: URL(fileURLWithPath: "/fixture/clang"),
-        sdk: URL(fileURLWithPath: "/fixture/SDK"),
+        sdk: URL(fileURLWithPath: "/fixture/SDK"), sdkVersion: "27.0",
         iconutil: URL(fileURLWithPath: "/usr/bin/iconutil"),
         composerTool: composer,
         xcodeVersion: "Xcode 27.1\nBuild version 27A9275\n",

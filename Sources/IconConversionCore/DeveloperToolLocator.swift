@@ -6,6 +6,7 @@ public struct DeveloperTools: Codable, Sendable {
     public let actool: URL
     public let clang: URL
     public let sdk: URL
+    public let sdkVersion: String
     public let iconutil: URL
     public let composerTool: URL?
     public let xcodeVersion: String
@@ -20,7 +21,7 @@ public struct DeveloperTools: Codable, Sendable {
     /// Stable identity for preview caching and stale-result checks. A tool change
     /// invalidates previews rather than allowing an old image to be shown.
     public var identity: String {
-        "\(developerDirectory.path)|\(xcodeVersion)|\(operatingSystem)|\(composerTool?.path ?? "no-composer")"
+        "\(developerDirectory.path)|\(xcodeVersion)|\(operatingSystem)|\(sdk.path)|\(sdkVersion)|\(composerTool?.path ?? "no-composer")"
     }
 
     public func validatePinnedTools() throws {
@@ -34,11 +35,14 @@ public struct DeveloperTools: Codable, Sendable {
         }
     }
 
-    /// Narrow release scope: this is the only combination exercised against the supplied Finder reference.
-    public func requireResearchedEnvironment() throws {
-        guard xcodeVersion.contains("Xcode 27.1\n"), xcodeVersion.contains("27A9275"),
-              operatingSystem == "27.0.1 (26A434)" else {
-            throw ConversionError.unsupportedTool("macOS \(operatingSystem), \(xcodeVersion.trimmingCharacters(in: .whitespacesAndNewlines))")
+    /// SDK-family compatibility policy, independent of exact Xcode and host builds.
+    /// Structural output validation does not certify visual fidelity on every environment.
+    public func requireSupportedSDK() throws {
+        // xcrun normally reports a numeric version even for beta SDKs. Accept
+        // explicit prerelease suffixes too, without accepting other SDK families.
+        let versionPattern = #"^27(?:\.[0-9]+)*(?:[\s-]*(?:beta|b|rc)(?:[\s.]*[0-9]+)?)?$"#
+        guard sdkVersion.range(of: versionPattern, options: [.regularExpression, .caseInsensitive]) != nil else {
+            throw ConversionError.unsupportedTool("macOS SDK \(sdkVersion). Select a full Xcode installation whose active macOS SDK is 27.x, including beta releases.")
         }
     }
 }
@@ -67,13 +71,14 @@ public struct DeveloperToolLocator: Sendable {
         let actool = try await resolve("actool", environment: pinned)
         let clang = try await resolve("clang", environment: pinned)
         let sdkPath = try await runner.run(executable: URL(fileURLWithPath: "/usr/bin/xcrun"), arguments: ["--sdk", "macosx", "--show-sdk-path"], directory: nil, environment: pinned).output.trimmingCharacters(in: .whitespacesAndNewlines)
+        let sdkVersion = try await runner.run(executable: URL(fileURLWithPath: "/usr/bin/xcrun"), arguments: ["--sdk", "macosx", "--show-sdk-version"], directory: nil, environment: pinned).output.trimmingCharacters(in: .whitespacesAndNewlines)
         let xcodebuild = developer.appendingPathComponent("usr/bin/xcodebuild")
         let version = try await runner.run(executable: xcodebuild, arguments: ["-version"], directory: nil, environment: pinned).output
         let osVersion = try await runner.run(executable: URL(fileURLWithPath: "/usr/bin/sw_vers"), arguments: ["-productVersion"], directory: nil, environment: pinned).output.trimmingCharacters(in: .whitespacesAndNewlines)
         let osBuild = try await runner.run(executable: URL(fileURLWithPath: "/usr/bin/sw_vers"), arguments: ["-buildVersion"], directory: nil, environment: pinned).output.trimmingCharacters(in: .whitespacesAndNewlines)
         let composerRoot = developer.deletingLastPathComponent().appendingPathComponent("Applications/Icon Composer.app/Contents/Executables")
         let composer = ["ictool", "icontool"].map { composerRoot.appendingPathComponent($0) }.first { FileManager.default.isExecutableFile(atPath: $0.path) }
-        let tools = DeveloperTools(developerDirectory: developer, xcodebuild: xcodebuild, actool: actool, clang: clang, sdk: URL(fileURLWithPath: sdkPath),
+        let tools = DeveloperTools(developerDirectory: developer, xcodebuild: xcodebuild, actool: actool, clang: clang, sdk: URL(fileURLWithPath: sdkPath), sdkVersion: sdkVersion,
             iconutil: URL(fileURLWithPath: "/usr/bin/iconutil"), composerTool: composer,
             xcodeVersion: version, operatingSystem: "\(osVersion) (\(osBuild))")
         try tools.validatePinnedTools()

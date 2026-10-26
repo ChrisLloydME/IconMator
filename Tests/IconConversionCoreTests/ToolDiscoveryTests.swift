@@ -4,15 +4,21 @@ import Testing
 
 private struct DiscoveryRunner: ProcessRunning {
     let developer: URL
+    var sdkVersion = "27.0"
+    var xcodeVersion = "Xcode 27.1\nBuild version 27A9275\n"
+    var hostVersion = "27.0.1"
     func run(executable: URL, arguments: [String], directory: URL?, environment: [String: String]?) async throws -> ProcessOutput {
         let output: String
         switch executable.lastPathComponent {
         case "xcode-select": output = developer.path
         case "xcrun":
             guard environment?["DEVELOPER_DIR"] == developer.path else { throw ConversionError.validation("Tool selection was not pinned") }
-            output = arguments.first == "--find" ? developer.appendingPathComponent("usr/bin/\(arguments.last!)").path : developer.appendingPathComponent("SDKs/Test.sdk").path
-        case "xcodebuild": output = "Xcode 27.1\nBuild version 27A9275\n"
-        case "sw_vers": output = arguments == ["-productVersion"] ? "27.0.1" : "26A434"
+            if arguments == ["--sdk", "macosx", "--show-sdk-version"] { output = sdkVersion }
+            else if arguments == ["--sdk", "macosx", "--show-sdk-path"] { output = developer.appendingPathComponent("SDKs/Test.sdk").path }
+            else if arguments.first == "--find" { output = developer.appendingPathComponent("usr/bin/\(arguments.last!)").path }
+            else { throw ConversionError.validation("Unexpected xcrun arguments: \(arguments)") }
+        case "xcodebuild": output = xcodeVersion
+        case "sw_vers": output = arguments == ["-productVersion"] ? hostVersion : "fixture-build"
         default: throw ConversionError.missingTool("Unexpected discovery invocation")
         }
         return ProcessOutput(output: output + "\n", status: 0)
@@ -35,7 +41,8 @@ struct ToolDiscoveryTests {
         #expect(tools.developerDirectory.path == developer.path)
         #expect(tools.actool.path == bins.appendingPathComponent("actool").path)
         #expect(tools.composerTool == nil)
-        try tools.requireResearchedEnvironment()
+        #expect(tools.sdkVersion == "27.0")
+        try tools.requireSupportedSDK()
     }
 
     @Test func commandLineToolsDirectoryIsNotAcceptedAsFullXcode() async throws {
@@ -43,5 +50,32 @@ struct ToolDiscoveryTests {
         await #expect(throws: ConversionError.self) {
             try await DeveloperToolLocator(runner: DiscoveryRunner(developer: workspace.url), environment: [:]).locate()
         }
+    }
+
+    @Test(arguments: ["27", "27.0", "27.1", "27.9.3", "27.0 beta 1", "27.1Beta2", "27.0b3", "27.0-beta.4", "27.0 RC 1", "26.0 beta 1", "28.0beta2", "26.4", "28.0", "270.0", "", "unknown", "27.x", "27."])
+    func sdkFamilyPolicyUsesReportedVersion(version: String) async throws {
+        let workspace = try TemporaryWorkspace(); defer { workspace.cleanUp() }
+        let developer = workspace.url.appendingPathComponent("Xcode Next.app/Contents/Developer")
+        let bins = developer.appendingPathComponent("usr/bin")
+        try FileManager.default.createDirectory(at: bins, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: developer.appendingPathComponent("SDKs/Test.sdk"), withIntermediateDirectories: true)
+        for name in ["xcodebuild", "actool", "clang"] {
+            #expect(FileManager.default.createFile(atPath: bins.appendingPathComponent(name).path, contents: Data(), attributes: [.posixPermissions: 0o700]))
+        }
+        // Neither a renamed SDK directory nor different Xcode/OS builds should
+        // determine compatibility. Use xcrun's reported SDK version.
+        let runner = DiscoveryRunner(developer: developer, sdkVersion: version,
+            xcodeVersion: "Xcode 27.9 Beta 2\nBuild version different\n", hostVersion: "26.9")
+        let tools = try await DeveloperToolLocator(runner: runner, environment: [:]).locate()
+        #expect(tools.sdkVersion == version)
+        if ["27", "27.0", "27.1", "27.9.3", "27.0 beta 1", "27.1Beta2", "27.0b3", "27.0-beta.4", "27.0 RC 1"].contains(version) {
+            try tools.requireSupportedSDK()
+        } else {
+            #expect(throws: ConversionError.self) { try tools.requireSupportedSDK() }
+        }
+        var alternateRunner = runner
+        alternateRunner.sdkVersion = "27.8"
+        let alternate = try await DeveloperToolLocator(runner: alternateRunner, environment: [:]).locate()
+        #expect(tools.identity != alternate.identity)
     }
 }

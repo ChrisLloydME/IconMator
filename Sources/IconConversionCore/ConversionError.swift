@@ -16,7 +16,7 @@ public enum ConversionError: Error, LocalizedError, Sendable {
         case .invalidInput(let detail): return "Invalid Icon Composer document: \(detail)"
         case .invalidArguments(let detail): return "Invalid arguments: \(detail)"
         case .missingTool(let detail): return "Developer tool unavailable: \(detail). Install and select a full Xcode installation."
-        case .unsupportedTool(let detail): return "Unvalidated toolchain: \(detail). Run the rendering integration checks before using this toolchain."
+        case .unsupportedTool(let detail): return "Unsupported toolchain: \(detail)"
         case .processFailed(let tool, let status, _):
             let recovery: String
             switch tool {

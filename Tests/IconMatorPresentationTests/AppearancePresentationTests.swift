@@ -175,7 +175,7 @@ private actor PreviewGate {
         var fields = """
         "developerDirectory":"file:///fixture/Xcode/Contents/Developer",
         "xcodebuild":"file:///fixture/xcodebuild","actool":"file:///fixture/actool",
-        "clang":"file:///fixture/clang","sdk":"file:///fixture/SDK",
+        "clang":"file:///fixture/clang","sdk":"file:///fixture/SDK","sdkVersion":"27.0",
         "iconutil":"file:///usr/bin/iconutil","xcodeVersion":"fixture","operatingSystem":"fixture"
         """
         if composer { fields += ",\"composerTool\":\"file:///fixture/ictool\"" }
