@@ -6,10 +6,11 @@ public struct PlannedConversion: Sendable {
 }
 
 public enum BatchPlanner {
-    public static func plan(inputs: [URL], folder: URL) -> [PlannedConversion] {
+    public static func plan(inputs: [URL], folder: URL, options: IconRenderOptions) -> [PlannedConversion] {
         var used = Set<String>()
         return inputs.map { input in
-            let basename = input.deletingPathExtension().lastPathComponent
+            let sourceName = input.deletingPathExtension().lastPathComponent
+            let basename = "\(sourceName)-macOS-\(options.generation.rawValue)-\(options.appearance.displayName)"
             var name = basename, number = 2
             while !used.insert(name.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: Locale(identifier: "en_US_POSIX"))).inserted {
                 name = "\(basename) (\(number))"; number += 1

@@ -22,6 +22,7 @@ IconMator converts Apple Icon Composer `.icon` documents into static `.icns` fil
 - Drag and drop or choose `.icon` files, with automatic previews.
 - Choose **macOS 26** or **macOS 27** rendering independently of **Default**, **Dark**, or **Mono** appearance for the preview, PNG, and ICNS.
 - Convert individual icons or batches with collision-safe filenames.
+- App exports include the source name, rendering generation, and appearance, such as `AppIcon-macOS-27-Dark.icns`. Optional PNG exports use the same name.
 - Export ten standard ICNS representations through 1024 × 1024, preserving transparency.
 - Optionally save the same 1024 × 1024 PNG used by the ICNS.
 - Cancel work, inspect diagnostics, and reveal verified exports in Finder.

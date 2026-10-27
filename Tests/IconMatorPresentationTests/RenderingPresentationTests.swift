@@ -202,6 +202,7 @@ private actor ConversionGate {
 
         #expect(await converter.recordedOptions() == [IconRenderOptions(generation: .macOS26, appearance: .dark)])
         #expect(model.selectedJob?.outputOptions == IconRenderOptions(generation: .macOS26, appearance: .dark))
+        #expect(model.selectedJob?.output?.lastPathComponent == "Convert-macOS-26-Dark.icns")
         #expect(model.selectedJob?.status == "Exported and verified")
         #expect(model.revealTarget != nil)
 

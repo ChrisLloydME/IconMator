@@ -256,7 +256,7 @@ final class ConversionViewModel {
     func startConversion() {
         guard canConvert, let tools, let destination else { return }
         let batchOptions = renderOptions
-        let plan = BatchPlanner.plan(inputs: jobs.map(\.input), folder: destination)
+        let plan = BatchPlanner.plan(inputs: jobs.map(\.input), folder: destination, options: batchOptions)
         let existing = plan.flatMap { item in
             [item.output] + (exportPNG ? [item.output.deletingPathExtension().appendingPathExtension("png")] : [])
         }.filter { FileManager.default.fileExists(atPath: $0.path) }
