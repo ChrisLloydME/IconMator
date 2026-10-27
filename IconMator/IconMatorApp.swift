@@ -19,6 +19,7 @@ struct IconMatorApp: App {
         }
         .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 560, height: 620)
+        .commands { WelcomeCommands() }
     }
 }
 

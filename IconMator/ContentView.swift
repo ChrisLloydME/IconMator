@@ -6,7 +6,13 @@ struct ContentView: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var model = ConversionViewModel()
     @State private var isDropTarget = false
-    @State private var showDiagnostics = false
+    @State private var presentedSheet: PresentedSheet?
+    @AppStorage(WelcomeProgress.completionKey) private var completedWelcomeVersion = 0
+
+    private enum PresentedSheet: String, Identifiable {
+        case welcome, diagnostics
+        var id: String { rawValue }
+    }
 
     var body: some View {
         VStack(spacing: 16) {
@@ -22,10 +28,28 @@ struct ContentView: View {
         .font(.body)
         .padding(20)
         .frame(minWidth: 520, minHeight: 540)
-        .task { model.refreshTools() }
+        .task {
+            model.refreshTools()
+            if WelcomeProgress.shouldPresent(completedVersion: completedWelcomeVersion) {
+                presentedSheet = .welcome
+            }
+        }
         .onDisappear { model.stopAllTasks() }
         .onOpenURL { model.importFiles([$0]) }
-        .sheet(isPresented: $showDiagnostics) { DiagnosticsView(model: model) }
+        .focusedSceneValue(\.showWelcome, model.isConverting ? nil : {
+            presentedSheet = .welcome
+        })
+        .sheet(item: $presentedSheet) { sheet in
+            switch sheet {
+            case .welcome:
+                WelcomeView(model: model) {
+                    completedWelcomeVersion = WelcomeProgress.currentVersion
+                    presentedSheet = nil
+                }
+            case .diagnostics:
+                DiagnosticsView(model: model)
+            }
+        }
     }
 
     private var windowHeader: some View {
@@ -226,7 +250,7 @@ struct ContentView: View {
                 if let output = model.revealTarget { model.reveal(output) }
             }
             .disabled(model.revealTarget == nil)
-            Button("Diagnostics…") { showDiagnostics = true }
+            Button("Diagnostics…") { presentedSheet = .diagnostics }
             footerStatus
             Group {
                 if model.isConverting {

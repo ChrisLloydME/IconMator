@@ -54,6 +54,8 @@ final class ConversionViewModel {
             renderSelectedPreview()
         }
     }
+    // Retain detected versions even when the SDK policy rejects conversion.
+    private(set) var detectedTools: DeveloperTools?
     var toolStatus = "Checking developer tools…"
     var toolIssue: String?
     var message: String?
@@ -67,6 +69,7 @@ final class ConversionViewModel {
     @ObservationIgnored private var toolTask: Task<Void, Never>?
     @ObservationIgnored private var previewGeneration = UUID()
     @ObservationIgnored private let externalToolsPermitted: Bool
+    @ObservationIgnored private let toolLocator: @Sendable () async throws -> DeveloperTools
     @ObservationIgnored private let converter: any IconConversionPerforming
     @ObservationIgnored private let previewRenderer: @Sendable (URL, IconRenderOptions, DeveloperTools) async throws -> Data
 
@@ -74,8 +77,10 @@ final class ConversionViewModel {
          converter: any IconConversionPerforming = IconConversionService(),
          previewRenderer: @escaping @Sendable (URL, IconRenderOptions, DeveloperTools) async throws -> Data = { input, options, tools in
              try await IconConversionService().preview(input: input, options: options, tools: tools)
-         }) {
+         },
+         toolLocator: @escaping @Sendable () async throws -> DeveloperTools = { try await DeveloperToolLocator().locate() }) {
         self.converter = converter
+        self.toolLocator = toolLocator
         self.previewRenderer = previewRenderer
         #if ICONMATOR_APP_SANDBOX_YES
         self.externalToolsPermitted = externalToolsPermitted ?? false
@@ -128,13 +133,14 @@ final class ConversionViewModel {
             toolStatus = "External rendering unavailable in this build"
             return
         }
-        isCheckingTools = true; toolIssue = nil; tools = nil
+        isCheckingTools = true; toolIssue = nil; tools = nil; detectedTools = nil
         invalidatePreviewsAndOutputs()
         toolTask = Task {
             defer { isCheckingTools = false }
             do {
-                let found = try await DeveloperToolLocator().locate()
+                let found = try await toolLocator()
                 try Task.checkCancellation()
+                detectedTools = found
                 try found.requireSupportedSDK()
                 tools = found
                 var status = "Host: macOS \(found.operatingSystem) · \(found.xcodeVersion.components(separatedBy: .newlines).first ?? "Xcode")"
