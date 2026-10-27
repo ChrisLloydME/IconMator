@@ -64,6 +64,22 @@ The ten slots are 16@1×, 16@2×, 32@1×, 32@2×, 128@1×, 128@2×, 256@1×, 256
 
 ## SwiftUI frontend
 
+`WelcomeView` is a two-page first-launch sheet with the application icon,
+introduction and live environment checklist. Completion is stored with a
+versioned `AppStorage` key only when the second page is finished. The Help menu
+uses a focused scene action to reopen it in the active window. Welcome and
+Diagnostics share one sheet route, avoiding competing presentations.
+
+`WelcomeEnvironmentReport` derives ready, limited and unavailable states from
+the same SDK policy and `RenderCapabilities` used by conversion. The shared
+`ConversionViewModel.refreshTools()` supplies its real checks and Recheck action.
+Detected versions are retained separately from conversion-ready tools so an
+unsupported SDK can still be identified. A limited macOS 27 host can expose
+Default without a compatible Composer; an invalid SDK never reports that mode
+as available. Tool preflight does not claim reference-image fidelity or run a
+sample conversion. Entering the workspace without completing setup does not
+bypass conversion guards.
+
 `ConversionViewModel` owns imports, selection, rendering generation, appearance, preview/conversion tasks, statuses and diagnostics. It accepts only valid packages, deduplicates imports, keeps the UI responsive during processing, cancels obsolete preview requests, and runs batch jobs sequentially. The complete options snapshot and tool identity are captured at batch start. Generation, appearance or tool changes clear rendered previews, exported-output status and the Reveal target; a late preview result is applied only if its task generation, job ID, options and tool identity still match. Errors are per-job so one failed input does not stop later independent jobs. Successful jobs retain an in-memory PNG preview even if PNG export is disabled.
 
 `ContentView` uses one shared import/preview workspace, with no sidebar. An empty workspace accepts drops or opens NSOpenPanel; after import it displays the selected rendered icon. Multiple inputs use a horizontal thumbnail tray. New imports become the selection, and the model automatically requests their preview without relying on a SwiftUI selection-change callback. The window uses native SwiftUI thin material as its container background, with a darker regular-material preview panel and a subtle adaptive tint, preserving translucency. Compact native menus for rendering generation and appearance share the top header; a standard bordered export-folder button and optional PNG share one row below the workspace. Only the generation/appearance controls use menu selectors; the folder action has no dropdown indicator. Typography uses native `.title2` semibold app and empty-state headings, `.body` text throughout the main-window controls, descriptions, file labels and status, and `.headline` Diagnostics section headings. Point-size overrides in the main window are limited to SF Symbols. Diagnostics uses the same semantic typography instead of shrinking its body/table text to 11–12 points; only annotations and monospaced logs use the smaller supporting style. Footer actions retain their original bordered button style, and SF Symbols use medium weight. The default window is 560 × 620 points with a 520 × 540 minimum; batch thumbnails occupy a bounded 72-point tray. The drop outline appears only during a drag, and the bottom progress area retains a fixed height to prevent layout jumps. Finder reveal, diagnostics and conversion/cancellation actions share the bottom bar. Unavailable combinations show the capability reason and disable conversion rather than silently rendering another generation or appearance. The separate `DiagnosticsView` uses a fixed heading, a scrollable body and a native bottom safe-area bar. Environment, rendering support and logs have padded, rounded section backgrounds. Environment values are aligned in a compact grid; six capabilities form a two-row support matrix with centered green SF Symbol checkmarks for available combinations and red crosses for unavailable ones; backend names remain in help and the copied report; unique unavailable reasons and the selected conversion log remain readable below. Its 520 × 560 material sheet stays narrower than the default window, and Copy Report includes full paths, renditions, reasons and logs even where screen values are truncated. AudioMator’s Acknowledgements sheet served as a layout reference; no source was imported.

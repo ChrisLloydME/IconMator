@@ -39,6 +39,11 @@ The accepted macOS 27 + Default output remains byte-identical to the prior imple
 
 ## Usage
 
+On first launch, a two-page welcome introduces conversion and checks the selected
+Xcode, macOS SDK and Icon Composer capabilities. Use **Help → Welcome to
+IconMator…** to open it again. You can enter the workspace before setup is
+complete; conversion remains gated by the actual tool checks.
+
 1. Import `.icon` documents using the shared drop/preview area.
 2. Select an export folder, choose **macOS 26** or **macOS 27** rendering and the **Default**, **Dark**, or **Mono** appearance, and optionally enable **Include PNG**.
 3. Choose **Convert to ICNS** or **Convert All**.

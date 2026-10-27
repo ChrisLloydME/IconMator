@@ -1,5 +1,16 @@
 # Validation report
 
+## Welcome flow update — 2026-10-27
+
+A two-page native welcome sheet now introduces conversion and reports real tool
+preflight results. Seven added non-GUI tests cover first-launch completion,
+all-mode readiness, limited Default support, missing tools, unsupported SDKs,
+missing generation selection, and recovery after rechecking. Existing unit and
+presentation tests were rerun. Rendering backends are unchanged; the real
+rendering matrix below was not rerun for this UI change. Debug and Release
+builds were checked without launching the application. Interactive layout and
+menu verification were not performed under the no-GUI instruction.
+
 Date: 2026-10-26. Host: macOS 27.0.1 (26A434), Xcode 27.1 (27A9275), arm64.
 
 Status: conversion engine and frontend implementation exist and compile. Default, Dark, Mono and both macOS rendering generations have real-output validation; **full product acceptance remains open**. The user explicitly authorized local non-sandboxed app builds; both configurations are rebuilt and ad-hoc signed. This report does not claim interactive GUI, Finder display, a macOS 26 host run or independent Finder references for every combination.
